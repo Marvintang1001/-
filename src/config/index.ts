@@ -3,13 +3,12 @@
 export default {
     db : [
         {
-            'name' : 'mysql',
-            'type' : 'mysql',
+            'name' : 'mongo',
+            'type' : 'mongodb',
             'host' : 'localhost',
-            'username' : 'root',
-            'password' : '1234',
+            'port' : 27017,
             'database' : 'inventory',
-            'entities' : ['dist/domain/**/repository/mysql.js'],
+            'entities' : ['dist/domain/**/repository/mongo.js'],
         },
     ],
 };
