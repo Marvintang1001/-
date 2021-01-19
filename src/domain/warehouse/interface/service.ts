@@ -6,8 +6,8 @@ import {WarehouseEntity, CreateBody} from './repository';
 
 
 interface ModifyBO {
-    status : 'full' | 'unavailable' | 'available';
-    remainCapacity : number;
+    status ?: 'full' | 'unavailable' | 'available';
+    remainCapacity ?: number;
 }
 
 
