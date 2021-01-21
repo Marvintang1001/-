@@ -3,7 +3,7 @@
 export interface SplitLogEntity {
     id : number;
     createTime : number;
-    origin : number[];
+    origin : number[];  // package id array
     end : number[];
 }
 

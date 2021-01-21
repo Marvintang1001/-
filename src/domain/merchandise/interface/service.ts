@@ -6,7 +6,7 @@ import {MerchandiseEntity, CreateBody} from './repository';
 
 
 interface ModifyBO {
-    other : any;
+    remark : any;
 }
 
 

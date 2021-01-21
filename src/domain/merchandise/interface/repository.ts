@@ -3,7 +3,7 @@
 export interface MerchandiseEntity {
     id : number;
     name : string;
-    other ?: any;  // 备注
+    remark ?: any;  // 备注
 }
 
 
@@ -29,7 +29,7 @@ export abstract class AbcMerchandiseQueryRepo {
 export interface CreateBody {
     id : number;
     name : string;
-    other ?: any;
+    remark ?: any;
 }
 
 export abstract class AbcMerchandiseSaveRepo {
