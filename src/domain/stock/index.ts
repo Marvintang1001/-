@@ -3,10 +3,10 @@
 import {compose} from 'ramda';
 
 import {AbcProvider, useProvider} from '@app/core/provider';
-import {AbcWarehouse} from './interface/service';
+import {AbcStock} from './interface/service';
 
 
-class WarehouseProvider extends AbcProvider {
+class StockProvider extends AbcProvider {
 
     // makeModule = compose(
         // this.addModules([CommonModule]),
@@ -18,5 +18,5 @@ class WarehouseProvider extends AbcProvider {
 }
 
 
-@useProvider(new WarehouseProvider())
-export class WarehouseModule {}
+@useProvider(new StockProvider())
+export class StockModule {}

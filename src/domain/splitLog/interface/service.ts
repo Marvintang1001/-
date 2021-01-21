@@ -7,6 +7,6 @@ import {SplitLogEntity, CreateBody} from './repository';
 
 export abstract class AbcSplitLog {
 
-    abstract create (CreateBody : CreateBody) : Promise<string>;
+    abstract create (CreateBody : CreateBody) : Promise<SplitLogEntity>;
 
 }

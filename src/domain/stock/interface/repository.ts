@@ -1,6 +1,6 @@
 
 
-export interface WarehouseEntity {
+export interface StockEntity {
     id : number;
     address : string;
     name : string;
@@ -21,11 +21,11 @@ export interface ManyQuery {
 }
 
 
-export abstract class AbcWarehouseQueryRepo {
+export abstract class AbcStockQueryRepo {
 
-    abstract fetchOne (query : OneQuery) : Promise<WarehouseEntity | undefined>;
+    abstract fetchOne (query : OneQuery) : Promise<StockEntity | undefined>;
 
-    abstract fetchMany (query : ManyQuery) :  Promise<WarehouseEntity[]>;
+    abstract fetchMany (query : ManyQuery) :  Promise<StockEntity[]>;
 
 }
 
@@ -37,12 +37,12 @@ export interface CreateBody {
     totalCapacity : number;
 }
 
-export abstract class AbcWarehouseSaveRepo {
+export abstract class AbcStockSaveRepo {
 
-    abstract save (body : CreateBody) : Promise<WarehouseEntity>;
+    abstract save (body : CreateBody) : Promise<StockEntity>;
 
-    abstract modify (target : WarehouseEntity, origin : WarehouseEntity) :
-    Promise<WarehouseEntity>;
+    abstract modify (target : StockEntity, origin : StockEntity) :
+    Promise<StockEntity>;
 
 }
 

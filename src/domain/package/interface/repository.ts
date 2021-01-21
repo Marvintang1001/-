@@ -5,7 +5,7 @@ export interface PackageEntity {
     capacity : number;
     merchandiseId : number;
     position : string;
-    status : 'onWarehouse' | 'onRoad' | 'unusual' | 'split';  // 在库/在途/已拆/异常
+    status : 'inStock' | 'onRoad' | 'unusual' | 'split';  // 在库/在途/已拆/异常
     path : string;  // 路径。用'/'分隔
 }
 
@@ -34,7 +34,7 @@ export interface CreateBody {
     capacity : number;
     merchandiseId : number;
     position : string;
-    status : 'onWarehouse' | 'onRoad' | 'unusual' | 'split';
+    status : 'inStock' | 'onRoad' | 'unusual' | 'split';
     path : string;
 }
 
