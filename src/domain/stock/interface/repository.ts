@@ -1,7 +1,11 @@
 
 
+import {Timestamp} from '@app/core/repository';
+
+
 export interface StockEntity {
-    id : number;
+    id : string;
+    timestamp : Timestamp;
     address : string;
     name : string;
     status : 'full' | 'unavailable' | 'available';
@@ -11,12 +15,12 @@ export interface StockEntity {
 
 
 export interface OneQuery {
-    id ?: number;
+    id ?: string;
     name ?: string;
 }
 
 export interface ManyQuery {
-    idList ?: number[];
+    idList ?: string[];
     status ?: string[];
 }
 

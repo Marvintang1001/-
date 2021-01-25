@@ -7,6 +7,13 @@ import {
 } from 'typeorm';
 
 
+export interface Timestamp {
+    created : number;
+    updated : number;
+    deleted ?: number;
+    expired ?: number;
+}
+
 export class BaseModel {
 
     @Column({type : 'float'})

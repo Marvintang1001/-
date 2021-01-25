@@ -5,7 +5,7 @@
 import {StockEntity, CreateBody} from './repository';
 
 
-interface ModifyBO {
+export interface ModifyBO {
     status ?: 'full' | 'unavailable' | 'available';
     remainCapacity ?: number;
 }
