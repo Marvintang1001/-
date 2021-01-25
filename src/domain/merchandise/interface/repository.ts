@@ -1,19 +1,23 @@
 
 
+import {Timestamp} from '@app/core/repository';
+
+
 export interface MerchandiseEntity {
-    id : number;
+    id : string;
+    timestamp : Timestamp
     name : string;
     remark ?: any;  // 备注
 }
 
 
 export interface OneQuery {
-    id ?: number;
+    id ?: string;
     name ?: string;
 }
 
 export interface ManyQuery {
-    idList ?: number[];
+    idList ?: string[];
 }
 
 
@@ -27,7 +31,6 @@ export abstract class AbcMerchandiseQueryRepo {
 
 
 export interface CreateBody {
-    id : number;
     name : string;
     remark ?: any;
 }
@@ -38,8 +41,6 @@ export abstract class AbcMerchandiseSaveRepo {
 
     abstract modify (target : MerchandiseEntity, origin : MerchandiseEntity) :
     Promise<MerchandiseEntity>;
-
-    abstract delete (entity : MerchandiseEntity) : Promise<MerchandiseEntity>;
 
 }
 

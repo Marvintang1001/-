@@ -10,6 +10,6 @@ export class MerchandiseModel extends MongoModel {
 
     @Column() name : string;
 
-    @Column() remark : string;
+    @Column({nullable : true}) remark ?: string;
 
 }
