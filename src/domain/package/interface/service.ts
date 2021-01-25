@@ -5,7 +5,7 @@
 import {PackageEntity, CreateBody} from './repository';
 
 
-interface ModifyBO {
+export interface ModifyBO {
     status ?: 'inStock' | 'onRoad' | 'unusual' | 'split';
     position ?: string;
     path ?: string;
