@@ -10,7 +10,7 @@ export class PackageModel extends MongoModel {
 
     @Column() capacity : number;
 
-    @Column() merchandiseId : number;
+    @Column() merchandiseId : string;
 
     @Column() position : string;
 

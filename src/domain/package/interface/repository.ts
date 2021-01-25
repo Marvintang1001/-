@@ -7,7 +7,7 @@ export interface PackageEntity {
     id : string;
     timestamp : Timestamp;
     capacity : number;
-    merchandiseId : number;
+    merchandiseId : string;
     position : string;
     status : 'inStock' | 'onRoad' | 'unusual' | 'split';  // 在库/在途/已拆/异常
     path : string;  // 路径。用'/'分隔
@@ -21,7 +21,7 @@ export interface OneQuery {
 export interface ManyQuery {
     idList ?: string[];
     status ?: string[];
-    merchandiseId ?: number[];
+    merchandiseId ?: string[];
 }
 
 
@@ -36,7 +36,7 @@ export abstract class AbcPackageQueryRepo {
 
 export interface CreateBody {
     capacity : number;
-    merchandiseId : number;
+    merchandiseId : string;
     position : string;
     status : 'inStock' | 'onRoad' | 'unusual' | 'split';
     path : string;

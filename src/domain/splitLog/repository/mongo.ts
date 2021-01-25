@@ -8,8 +8,8 @@ import {MongoModel} from '@app/core/repository';
 @Entity({name : 'splitLog'})
 export class SplitLogModel extends MongoModel {
 
-    @Column() origin : number[];
+    @Column() origin : string[];
 
-    @Column() end : number[];
+    @Column() end : string[];
 
 }

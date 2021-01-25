@@ -1,21 +1,24 @@
 
 
+import {Timestamp} from '@app/core/repository';
+
+
 export interface SplitLogEntity {
-    id : number;
-    createTime : number;
-    origin : number[];  // package id array
-    end : number[];
+    id : string;
+    timestamp : Timestamp
+    origin : string[];  // package id array
+    end : string[];
 }
 
 
 export interface OneQuery {
-    id : number;
+    id : string;
 }
 
 export interface ManyQuery {
-    idList ?: number[];
-    origin ?: number[];
-    end ?: number[];
+    idList ?: string[];
+    origin ?: string[];
+    end ?: string[];
 }
 
 
@@ -29,8 +32,8 @@ export abstract class AbcSplitLogQueryRepo {
 
 
 export interface CreateBody {
-    origin : number[];
-    end : number[];
+    origin : string[];
+    end : string[];
 }
 
 export abstract class AbcSplitLogSaveRepo {
