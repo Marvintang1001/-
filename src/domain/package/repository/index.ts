@@ -13,21 +13,21 @@ import {PackageModel} from './mongo';
 
 
 const modelToEntity = (package_ : PackageModel) : PackageEntity => {
-    const {id, created_at, updated_at, deleted_at, expired_at, ...other} = package_;
+    const {id, created_at, updated_at, deleted_at, finished_at, ...other} = package_;
     const timestamp = {
         created : created_at, updated : updated_at,
-        deleted : deleted_at, expired : expired_at,
+        deleted : deleted_at, finished : finished_at,
     };
     return {id : id.toString(), timestamp, ...other};
 };
 
 const entityToModel = (package_ : PackageEntity) : PackageModel => {
     const {id, timestamp, ...other} = package_;
-    const {created, updated, deleted, expired} = timestamp;
+    const {created, updated, deleted, finished} = timestamp;
     return {
         id : new ObjectID(id),
         created_at : created, updated_at : updated,
-        deleted_at : deleted, expired_at : expired,
+        deleted_at : deleted, finished_at : finished,
         ...other};
 };
 
@@ -52,20 +52,11 @@ export class PackageQueryRepo extends AbcPackageQueryRepo {
 
     async fetchMany (param : ManyQuery) {
         const {idList, status, merchandiseId} = param;
-        const query = this.repo.createQueryBuilder();
-        if (idList) {
-            if (idList.length === 0) { return []; }
-            query.andWhere('id IN(:...idList})', {idList});
-        }
-        if (status) {
-            if (status.length === 0) { return []; }
-            query.andWhere('status IN(:...status)', {status});
-        }
-        if (merchandiseId) {
-            if (merchandiseId.length === 0) { return []; }
-            query.andWhere('merchandiseId IN(:...merchandiseId)', {merchandiseId});
-        }
-        const result : PackageModel[] = await query.printSql().getMany();
+        const result = await this.repo.find({where : {
+            _id : {$in : idList},
+            merchandiseId : {$in : merchandiseId},
+            status : {$in : status},
+        }});
         return result.map(x => modelToEntity(x));
     }
 

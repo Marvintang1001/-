@@ -8,11 +8,9 @@ import {MongoModel} from '@app/core/repository';
 @Entity({name : 'order'})
 export class OrderModel extends MongoModel {
 
-    @Column() endTime : number;
+    @Column() packageId : string;
 
-    @Column() packageId : number;
-
-    @Column() loss : number;
+    @Column({nullable : true}) loss ?: number;
 
     @Column() origin : string;
 
@@ -20,7 +18,7 @@ export class OrderModel extends MongoModel {
 
     @Column() type : string;
 
-    @Column() remark : string;
+    @Column({nullable : true}) remark ?: string;
 
     @Column()
     status : 'start' | 'processing' | 'finish' | 'returning' | 'return' | 'unusual';

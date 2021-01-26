@@ -11,7 +11,7 @@ export interface Timestamp {
     created : number;
     updated : number;
     deleted ?: number;
-    expired ?: number;
+    finished ?: number;
 }
 
 export class BaseModel {
@@ -23,7 +23,7 @@ export class BaseModel {
     updated_at : number;
 
     @Column({type : 'float', nullable : true})
-    expired_at ?: number;
+    finished_at ?: number;
 
     @Column({type : 'float', nullable : true})
     deleted_at ?: number;

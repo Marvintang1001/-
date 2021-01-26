@@ -5,8 +5,8 @@
 import {OrderEntity, CreateBody} from './repository';
 
 
-interface ModifyBO {
-    endTime ?: number;
+export interface ModifyBO {
+    finished ?: number;
     type ?: string;
     loss ?: number;
     status ?: 'start' | 'processing' | 'finish' | 'returning' | 'return' | 'unusual';

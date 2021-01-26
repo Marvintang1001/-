@@ -13,21 +13,21 @@ import {StockModel} from './mongo';
 
 
 const modelToEntity = (stock : StockModel) : StockEntity => {
-    const {id, created_at, updated_at, deleted_at, expired_at, ...other} = stock;
+    const {id, created_at, updated_at, deleted_at, finished_at, ...other} = stock;
     const timestamp = {
         created : created_at, updated : updated_at,
-        deleted : deleted_at, expired : expired_at,
+        deleted : deleted_at, finished : finished_at,
     };
     return {id : id.toString(), timestamp, ...other};
 };
 
 const entityToModel = (stock : StockEntity) : StockModel => {
     const {id, timestamp, ...other} = stock;
-    const {created, updated, deleted, expired} = timestamp;
+    const {created, updated, deleted, finished} = timestamp;
     return {
         id : new ObjectID(id),
         created_at : created, updated_at : updated,
-        deleted_at : deleted, expired_at : expired,
+        deleted_at : deleted, finished_at : finished,
         ...other};
 };
 
@@ -52,16 +52,11 @@ export class StockQueryRepo extends AbcStockQueryRepo {
 
     async fetchMany (param : ManyQuery) {
         const {idList, status} = param;
-        const query = this.repo.createQueryBuilder();
-        if (idList) {
-            if (idList.length === 0) { return []; }
-            query.andWhere('id IN(:...idList})', {idList});
-        }
-        if (status) {
-            if (status.length === 0) { return []; }
-            query.andWhere('status IN(:...status)', {status});
-        }
-        const result : StockModel[] = await query.printSql().getMany();
+        const result = await this.repo.find({where : {
+            _id : {$in : idList},
+            origin : {$in : origin},
+            status : {$in : status},
+        }});
         return result.map(x => modelToEntity(x));
     }
 

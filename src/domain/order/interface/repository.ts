@@ -1,12 +1,14 @@
 
 
+import {Timestamp} from '@app/core/repository';
+
+
 export interface OrderEntity {
-    id : number;
-    createTime : number;
-    endTime ?: number;
+    id : string;
+    timestamp : Timestamp;
     origin : string;
     target : string;
-    packageId : number;
+    packageId : string;
     type : string;
     loss ?: number;
     status : 'start' | 'processing' | 'finish' | 'returning' | 'return' | 'unusual';
@@ -19,12 +21,12 @@ export interface OneQuery {
 }
 
 export interface ManyQuery {
-    idList ?: number[];
-    createTime ?: number;
-    endTime ?: number;
+    idList ?: string[];
+    created ?: number;
+    finished ?: number;
     origin ?: string[];
     target ?: string[];
-    packageId ?: number[];
+    packageId ?: string[];
     status ?: string[];
 }
 
@@ -41,7 +43,7 @@ export abstract class AbcOrderQueryRepo {
 export interface CreateBody {
     origin : string;
     target : string;
-    packageId : number;
+    packageId : string;
     type : string;
     loss ?: number;
     status : 'start' | 'processing' | 'finish' | 'returning' | 'return' | 'unusual';
