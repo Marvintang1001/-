@@ -20,10 +20,9 @@ export class PackageService extends AbcPackage {
     }
 
     async modify (origin : PackageEntity, modifyBO : ModifyBO) {
-        const {status, position, path} = modifyBO;
+        const {status, path} = modifyBO;
         const target = {
             ...origin, status : status || origin.status,
-            position : position || origin.position,
             path : path || origin.path,
         };
         return this.saveRepo.modify(target, origin);

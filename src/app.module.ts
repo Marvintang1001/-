@@ -9,6 +9,7 @@ import {StockModule} from './domain/stock';
 import config from './config';
 import {MerchandiseModule} from './domain/merchandise';
 import {OrderModule} from './domain/order';
+import {PurchaseController} from './http/purchase';
 
 
 class AppProvider extends AbcProvider {
@@ -19,7 +20,7 @@ class AppProvider extends AbcProvider {
             ConfigModule.forRoot({isGlobal : true}),
             StockModule, MerchandiseModule, OrderModule,
         ], false),
-        this.addControllers([])
+        this.addControllers([PurchaseController])
     );
 
 }

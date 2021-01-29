@@ -8,7 +8,6 @@ export interface PackageEntity {
     timestamp : Timestamp;
     capacity : number;
     merchandiseId : string;
-    position : string;
     status : 'inStock' | 'onRoad' | 'unusual' | 'split';  // 在库/在途/已拆/异常
     path : string;  // 路径。用'/'分隔
 }
@@ -37,8 +36,7 @@ export abstract class AbcPackageQueryRepo {
 export interface CreateBody {
     capacity : number;
     merchandiseId : string;
-    position : string;
-    status : 'inStock' | 'onRoad' | 'unusual' | 'split';
+    status : 'normal' | 'unusual' | 'split';
     path : string;
 }
 

@@ -10,6 +10,7 @@ import {
     OneQuery, ManyQuery, CreateBody,
 } from '../interface/repository';
 import {StockModel} from './mongo';
+import { ApiError } from '@app/error';
 
 
 const modelToEntity = (stock : StockModel) : StockEntity => {
@@ -76,10 +77,38 @@ export class StockSaveRepo extends AbcStockSaveRepo {
     }
 
     async modify (target : StockEntity, origin : StockEntity) {
-        const {status, remainCapacity} = target;
-        const model = entityToModel({...origin, status, remainCapacity});
-        const newModel = await this.repo.save(model);
-        return modelToEntity(newModel);
+        const {status, remainCapacity} = target;  // 暂不支持同时修改
+        if (status != origin.status) {
+            const model = entityToModel({...origin, status});
+            const newModel = await this.repo.save(model);
+            return modelToEntity(newModel);
+        }
+        const diff = remainCapacity - origin.remainCapacity;  // 小于0：入库；大于0：出库
+        if (diff < 0) {
+            const {value, ok} = await this.repo.findOneAndUpdate({
+                    _id : new ObjectID(target.id),
+                    status : 'avaliable',
+                    remainCapacity : {$gte : diff},
+                }, {$inc : {remainCapacity : diff}}
+            );
+            if (!ok) {
+                throw new ApiError('仓库容量不足');
+            }
+            return modelToEntity(value);
+        }
+        if (diff > 0) {
+            const {value, ok} = await this.repo.findOneAndUpdate({
+                    _id : new ObjectID(target.id),
+                    status : 'avaliable',
+                    remainCapacity : {$lte : diff},
+                }, {$inc : {remainCapacity : diff}}
+            );
+            if (!ok) {
+                throw new ApiError('库存不足');
+            }
+            return modelToEntity(value);
+        }
+        return origin;
     }
 
 }

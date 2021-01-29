@@ -37,7 +37,7 @@ export abstract class AbcStockQueryRepo {
 export interface CreateBody {
     address : string;
     name : string;
-    status : 'full' | 'unavailable' | 'available';
+    status : 'unavailable' | 'available';
     totalCapacity : number;
 }
 

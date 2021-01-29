@@ -11,13 +11,13 @@ export interface OrderEntity {
     packageId : string;
     type : string;
     loss ?: number;
-    status : 'start' | 'processing' | 'finish' | 'returning' | 'return' | 'unusual';
+    status : 'start' | 'finish' | 'return' | 'unusual';
     remark ?: string;
 }
 
 
 export interface OneQuery {
-    id : number;
+    id : string;
 }
 
 export interface ManyQuery {
@@ -44,9 +44,9 @@ export interface CreateBody {
     origin : string;
     target : string;
     packageId : string;
-    type : string;
+    type : string;  // purchase
     loss ?: number;
-    status : 'start' | 'processing' | 'finish' | 'returning' | 'return' | 'unusual';
+    status : 'start' | 'finish' | 'returning' | 'return' | 'unusual';
     remark ?: string;
 }
 

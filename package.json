@@ -25,6 +25,7 @@
     "@nestjs/core": "^7.5.1",
     "@nestjs/platform-express": "^7.5.1",
     "@nestjs/typeorm": "^7.1.5",
+    "class-validator": "^0.13.1",
     "dayjs": "^1.10.3",
     "mongodb": "^3.6.3",
     "ramda": "^0.27.1",
