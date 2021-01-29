@@ -21,6 +21,7 @@ export abstract class AbcOrder {
     abstract modify (origin : OrderEntity, modifyBO : ModifyBO) :
     Promise<OrderEntity>;
 
-    abstract inStock (order : OrderEntity) : Promise<Either<boolean>>;
+    abstract inStock (order : OrderEntity, back ?: boolean, loss ?: number) :
+    Promise<Either<OrderEntity>>;
 
 }

@@ -12,10 +12,8 @@ export class PackageModel extends MongoModel {
 
     @Column() merchandiseId : string;
 
-    @Column() position : string;
-
     @Column() path : string;
 
-    @Column() status : 'inStock' | 'onRoad' | 'unusual' | 'split';
+    @Column() status : 'normal' | 'unusual' | 'split';
 
 }

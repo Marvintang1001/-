@@ -12,7 +12,7 @@ export class StockModel extends MongoModel {
 
     @Column() name : string;
 
-    @Column() status : 'full' | 'unavailable' | 'available';
+    @Column() status : 'unavailable' | 'available';
 
     @Column() totalCapacity : number;
 

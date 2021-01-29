@@ -76,8 +76,8 @@ export class PackageSaveRepo extends AbcPackageSaveRepo {
     }
 
     async modify (target : PackageEntity, origin : PackageEntity) {
-        const {status, position, path} = target;
-        const model = entityToModel({...origin, status, position, path});
+        const {status, capacity, path} = target;
+        const model = entityToModel({...origin, status, capacity, path});
         const newModel = await this.repo.save(model);
         return modelToEntity(newModel);
     }

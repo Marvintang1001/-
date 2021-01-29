@@ -8,7 +8,7 @@ export interface StockEntity {
     timestamp : Timestamp;
     address : string;
     name : string;
-    status : 'full' | 'unavailable' | 'available';
+    status : 'unavailable' | 'available';
     totalCapacity : number;
     remainCapacity : number;  // 剩余容量
 }

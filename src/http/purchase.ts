@@ -29,7 +29,7 @@ export class PurchaseController {
         });
         const stock = await this.stockQuery.fetchOne({id : target});
         if (!stock) {
-            return {code : 1, error : '无效的目的仓库id'};
+            return {code : 101, error : '无效的目的仓库id'};
         }
         const order = await this.orderService.create({
             origin, target, packageId : package_.id, type : 'purchase',
@@ -42,10 +42,10 @@ export class PurchaseController {
     @Post('inStock')
     async inStock (@Body() {id} : ConfirmDto) {
         const order = await this.orderQuery.fetchOne({id});
-        if (!order || order.status != 'start') return {code : 2, error : '无效的货单id'};
+        if (!order || order.status != 'start') return {code : 102, error : '无效的货单id'};
         return either(
             ok => ({code : 0, data : ok}),
-            err => ({code : 3, error : '该仓库已满或暂不可用'}),
+            err => ({code : 103, error : '该仓库已满或暂不可用'}),
             await this.orderService.inStock(order)
         );
     }

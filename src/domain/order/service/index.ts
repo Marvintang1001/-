@@ -39,29 +39,33 @@ export class OrderService extends AbcOrder {
             remark : remark || origin.remark,
             timestamp : finished ? timestamp : origin.timestamp,
         };
+        if (!!loss) {
+            // package.capacity - loss
+            const package_ = await this.packageQuery.fetchOne({id : origin.packageId});
+            package_ && await this.packageService.modify(package_, {loss});
+        }
         return this.saveRepo.modify(target, origin);
     }
 
     // 落库：对应库存增加（库存是否有剩余容量）；包裹路径、状态更新；采购单状态更新
-    async inStock (order : OrderEntity) {
+    async inStock (order : OrderEntity, back : boolean = false, loss : number = 0) {
         const package_ = await this.packageQuery.fetchOne({id : order.packageId});
-        const stock = await this.stockQuery.fetchOne({id : order.origin});
-        if (stock.status != 'available') {
-            return Left.of(false);
-        }
+        const id = back ? order.origin : order.target;
+        const stock = await this.stockQuery.fetchOne({id});
+        if (stock.status != 'available') return Left.of(order);
         try {
             await this.stockService.modify(stock, {
-                remainCapacity : (stock.remainCapacity - package_.capacity),
+                remainCapacity : (stock.remainCapacity - package_.capacity + loss),
             });
         } catch (e) {
-            return Left.of(false);
+            return Left.of(order);
         }
         await this.packageService.modify(package_, {
-            path : [package_.path, order.target].join('/'),
-            // status : 'inStock',
+            path : !back ? [package_.path, order.target].join('/') : undefined, loss,
         });
-        await this.modify(order, {status : 'finish'});
-        return Right.of(true);
+        const reuslt = await this.modify(order,
+            {status : !back ? 'return' : 'finish', loss});
+        return Right.of(reuslt);
     }
 
 }
