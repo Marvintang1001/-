@@ -21,7 +21,7 @@ export class OrderModel extends MongoModel {
     @Column({nullable : true}) remark ?: string;
 
     @Column()
-    status : 'start' | 'processing' | 'finish' | 'returning' | 'return' | 'unusual';
+    status : 'start' | 'finish' | 'return' | 'unusual';
 
 
 }

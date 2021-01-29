@@ -40,7 +40,7 @@ export class OrderRepository extends BaseMongo<OrderModel> {}
 export class OrderQueryRepo extends AbcOrderQueryRepo {
 
     constructor (
-        @InjectRepository(OrderRepository, 'postgres')
+        @InjectRepository(OrderRepository, 'mongo')
         private readonly repo : OrderRepository,
     ) { super(); }
 
@@ -74,8 +74,8 @@ export class OrderSaveRepo extends AbcOrderSaveRepo {
         private readonly repo : OrderRepository,
     ) { super(); }
 
-    async save (Order : CreateBody) {
-        const model = await this.repo.save(Order);
+    async save (order : CreateBody) {
+        const model = await this.repo.save(order);
         return modelToEntity(model);
     }
 

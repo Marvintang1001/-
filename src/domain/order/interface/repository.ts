@@ -46,7 +46,7 @@ export interface CreateBody {
     packageId : string;
     type : string;  // purchase
     loss ?: number;
-    status : 'start' | 'finish' | 'returning' | 'return' | 'unusual';
+    status : 'start' | 'finish' | 'return' | 'unusual';
     remark ?: string;
 }
 

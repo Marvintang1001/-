@@ -40,7 +40,7 @@ export class MerchandiseRepository extends BaseMongo<MerchandiseModel> {}
 export class MerchandiseQueryRepo extends AbcMerchandiseQueryRepo {
 
     constructor (
-        @InjectRepository(MerchandiseRepository, 'postgres')
+        @InjectRepository(MerchandiseRepository, 'mongo')
         private readonly repo : MerchandiseRepository,
     ) { super(); }
 

@@ -1,18 +1,25 @@
 
 
 import {compose} from 'ramda';
+import {TypeOrmModule} from '@nestjs/typeorm';
 
 import {AbcProvider, useProvider} from '@app/core/provider';
 import {AbcPackage} from './interface/service';
 import {PackageService} from './service';
 import {AbcPackageQueryRepo, AbcPackageSaveRepo} from './interface/repository';
-import {PackageQueryRepo, PackageSaveRepo} from './repository';
+import {PackageQueryRepo, PackageRepository, PackageSaveRepo} from './repository';
+import {PackageModel} from './repository/mongo';
 
 
 class PackageProvider extends AbcProvider {
 
     makeModule = compose(
         this.addModules([]),
+        this.addModules([
+            TypeOrmModule.forFeature(
+                [PackageModel, PackageRepository], 'mongo',
+            ),
+        ], false),
         this.addProviders([
             {provide : AbcPackage, useClass : PackageService},
             {provide : AbcPackageQueryRepo, useClass : PackageQueryRepo},

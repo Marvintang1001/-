@@ -10,7 +10,7 @@ import {
     OneQuery, ManyQuery, CreateBody,
 } from '../interface/repository';
 import {StockModel} from './mongo';
-import { ApiError } from '@app/error';
+import {ApiError} from '@app/error';
 
 
 const modelToEntity = (stock : StockModel) : StockEntity => {
@@ -41,7 +41,7 @@ export class StockRepository extends BaseMongo<StockModel> {}
 export class StockQueryRepo extends AbcStockQueryRepo {
 
     constructor (
-        @InjectRepository(StockRepository, 'postgres')
+        @InjectRepository(StockRepository, 'mongo')
         private readonly repo : StockRepository,
     ) { super(); }
 

@@ -40,7 +40,7 @@ export class SplitLogRepository extends BaseMongo<SplitLogModel> {}
 export class SplitLogQueryRepo extends AbcSplitLogQueryRepo {
 
     constructor (
-        @InjectRepository(SplitLogRepository, 'postgres')
+        @InjectRepository(SplitLogRepository, 'mongo')
         private readonly repo : SplitLogRepository,
     ) { super(); }
 

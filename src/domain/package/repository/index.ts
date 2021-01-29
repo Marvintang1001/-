@@ -40,7 +40,7 @@ export class PackageRepository extends BaseMongo<PackageModel> {}
 export class PackageQueryRepo extends AbcPackageQueryRepo {
 
     constructor (
-        @InjectRepository(PackageRepository, 'postgres')
+        @InjectRepository(PackageRepository, 'mongo')
         private readonly repo : PackageRepository,
     ) { super(); }
 

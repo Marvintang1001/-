@@ -1,18 +1,25 @@
 
 
 import {compose} from 'ramda';
+import {TypeOrmModule} from '@nestjs/typeorm';
 
 import {AbcProvider, useProvider} from '@app/core/provider';
 import {AbcSplitLog} from './interface/service';
 import {SplitLogService} from './service';
 import {AbcSplitLogQueryRepo, AbcSplitLogSaveRepo} from './interface/repository';
-import {SplitLogQueryRepo, SplitLogSaveRepo} from './repository';
+import {SplitLogQueryRepo, SplitLogRepository, SplitLogSaveRepo} from './repository';
+import {SplitLogModel} from './repository/mongo';
 
 
 class SplitLogProvider extends AbcProvider {
 
     makeModule = compose(
         this.addModules([]),
+        this.addModules([
+            TypeOrmModule.forFeature(
+                [SplitLogModel, SplitLogRepository], 'mongo',
+            ),
+        ], false),
         this.addProviders([
             {provide : AbcSplitLog, useClass : SplitLogService},
             {provide : AbcSplitLogQueryRepo, useClass : SplitLogQueryRepo},
