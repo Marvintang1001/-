@@ -9,12 +9,13 @@ import {SplitLogService} from './service';
 import {AbcSplitLogQueryRepo, AbcSplitLogSaveRepo} from './interface/repository';
 import {SplitLogQueryRepo, SplitLogRepository, SplitLogSaveRepo} from './repository';
 import {SplitLogModel} from './repository/mongo';
+import {PackageModule} from '../package';
 
 
 class SplitLogProvider extends AbcProvider {
 
     makeModule = compose(
-        this.addModules([]),
+        this.addModules([PackageModule]),
         this.addModules([
             TypeOrmModule.forFeature(
                 [SplitLogModel, SplitLogRepository], 'mongo',
