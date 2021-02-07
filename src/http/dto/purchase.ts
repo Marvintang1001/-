@@ -5,7 +5,7 @@ import {IsNumber, IsOptional, IsString} from 'class-validator';
 
 export class ApplyDto {
 
-    @IsString() merchandiseId : string;
+    @IsString() merchandiseId : string[];
 
     @IsString() origin : string;
 

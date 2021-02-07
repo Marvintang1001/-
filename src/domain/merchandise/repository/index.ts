@@ -74,8 +74,8 @@ export class MerchandiseSaveRepo extends AbcMerchandiseSaveRepo {
     }
 
     async modify (target : MerchandiseEntity, origin : MerchandiseEntity) {
-        const {remark} = target;
-        const model = entityToModel({...origin, remark});
+        const {ownerId} = target;
+        const model = entityToModel({...origin, ownerId});
         const newModel = await this.repo.save(model);
         return modelToEntity(newModel);
     }

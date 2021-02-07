@@ -6,18 +6,19 @@ import {Timestamp} from '@app/core/repository';
 export interface MerchandiseEntity {
     id : string;
     timestamp : Timestamp
-    name : string;
-    remark ?: any;  // 备注
+    catagoryId : string;
+    ownerId : string;
 }
 
 
 export interface OneQuery {
     id ?: string;
-    name ?: string;
 }
 
 export interface ManyQuery {
     idList ?: string[];
+    catagoryId ?: string[];
+    ownerId ?: string[];
 }
 
 
@@ -31,8 +32,8 @@ export abstract class AbcMerchandiseQueryRepo {
 
 
 export interface CreateBody {
-    name : string;
-    remark ?: any;
+    catagoryId : string;
+    ownerId : string;
 }
 
 export abstract class AbcMerchandiseSaveRepo {

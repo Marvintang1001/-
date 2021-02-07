@@ -20,9 +20,9 @@ export class MerchandiseService extends AbcMerchandise {
     }
 
     async modify (origin : MerchandiseEntity, modifyBO : ModifyBO) {
-        const {remark} = modifyBO;
+        const {ownerId} = modifyBO;
         const target = {
-            ...origin, remark : remark || origin.remark,
+            ...origin, ownerId : ownerId || origin.ownerId,
         };
         return this.saveRepo.modify(target, origin);
     }

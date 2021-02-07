@@ -8,8 +8,8 @@ import {MongoModel} from '@app/core/repository';
 @Entity({name : 'merchandise'})
 export class MerchandiseModel extends MongoModel {
 
-    @Column() name : string;
+    @Column() catagoryId : string;
 
-    @Column({nullable : true}) remark ?: string;
+    @Column() ownerId : string;
 
 }

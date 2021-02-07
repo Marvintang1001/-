@@ -1,12 +1,12 @@
 /**
- * 仓库商品服务
+ * 商品服务
  */
 
 import {MerchandiseEntity, CreateBody} from './repository';
 
 
 export interface ModifyBO {
-    remark : any;
+    ownerId : string;
 }
 
 
