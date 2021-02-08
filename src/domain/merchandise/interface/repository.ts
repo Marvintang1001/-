@@ -5,7 +5,8 @@ import {Timestamp} from '@app/core/repository';
 
 export interface MerchandiseEntity {
     id : string;
-    timestamp : Timestamp
+    timestamp : Timestamp;
+    rfid : string;
     catagoryId : string;
     ownerId : string;
 }
@@ -33,6 +34,7 @@ export abstract class AbcMerchandiseQueryRepo {
 
 export interface CreateBody {
     catagoryId : string;
+    rfid : string;
     ownerId : string;
 }
 

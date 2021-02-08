@@ -10,6 +10,8 @@ export class MerchandiseModel extends MongoModel {
 
     @Column() catagoryId : string;
 
+    @Column() rfid : string;
+
     @Column() ownerId : string;
 
 }
