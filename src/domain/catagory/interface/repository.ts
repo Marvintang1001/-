@@ -4,7 +4,7 @@ import {Timestamp} from '@app/core/repository';
 
 
 export interface CatagoryEntity {
-    id : string;
+    id : number;
     timestamp : Timestamp
     name : string;
     remark ?: any;  // 备注
@@ -12,12 +12,12 @@ export interface CatagoryEntity {
 
 
 export interface OneQuery {
-    id ?: string;
+    id ?: number;
     name ?: string;
 }
 
 export interface ManyQuery {
-    idList ?: string[];
+    idList ?: number[];
 }
 
 

@@ -9,23 +9,22 @@ import {
     CatagoryEntity, AbcCatagoryQueryRepo, AbcCatagorySaveRepo,
     OneQuery, ManyQuery, CreateBody,
 } from '../interface/repository';
-import {CatagoryModel} from './mongo';
+import {CatagoryModel} from './postgres';
 
 
 const modelToEntity = (Catagory : CatagoryModel) : CatagoryEntity => {
-    const {id, created_at, updated_at, deleted_at, finished_at, ...other} = Catagory;
+    const {created_at, updated_at, deleted_at, finished_at, ...other} = Catagory;
     const timestamp = {
         created : created_at, updated : updated_at,
         deleted : deleted_at, finished : finished_at,
     };
-    return {id : id.toString(), timestamp, ...other};
+    return {timestamp, ...other};
 };
 
 const entityToModel = (Catagory : CatagoryEntity) : CatagoryModel => {
-    const {id, timestamp, ...other} = Catagory;
+    const {timestamp, ...other} = Catagory;
     const {created, updated, deleted, finished} = timestamp;
     return {
-        id : new ObjectID(id),
         created_at : created, updated_at : updated,
         deleted_at : deleted, finished_at : finished,
         ...other};
@@ -40,7 +39,7 @@ export class CatagoryRepository extends BaseMongo<CatagoryModel> {}
 export class CatagoryQueryRepo extends AbcCatagoryQueryRepo {
 
     constructor (
-        @InjectRepository(CatagoryRepository, 'mongo')
+        @InjectRepository(CatagoryRepository, 'postgres')
         private readonly repo : CatagoryRepository,
     ) { super(); }
 
@@ -64,12 +63,12 @@ export class CatagoryQueryRepo extends AbcCatagoryQueryRepo {
 export class CatagorySaveRepo extends AbcCatagorySaveRepo {
 
     constructor (
-        @InjectRepository(CatagoryRepository, 'mongo')
+        @InjectRepository(CatagoryRepository, 'postgres')
         private readonly repo : CatagoryRepository,
     ) { super(); }
 
-    async save (Catagory : CreateBody) {
-        const model = await this.repo.save(Catagory);
+    async save (catagory : CreateBody) {
+        const model = await this.repo.save(catagory);
         return modelToEntity(model);
     }
 

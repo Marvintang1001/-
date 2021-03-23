@@ -10,7 +10,7 @@ import {AbcCatagoryQueryRepo, AbcCatagorySaveRepo} from './interface/repository'
 import {
     CatagoryQueryRepo, CatagoryRepository, CatagorySaveRepo,
 } from './repository';
-import {CatagoryModel} from './repository/mongo';
+import {CatagoryModel} from './repository/postgres';
 
 
 class CatagoryProvider extends AbcProvider {
@@ -19,7 +19,7 @@ class CatagoryProvider extends AbcProvider {
         this.addModules([]),
         this.addModules([
             TypeOrmModule.forFeature(
-                [CatagoryModel, CatagoryRepository], 'mongo',
+                [CatagoryModel, CatagoryRepository], 'postgres',
             ),
         ], false),
         this.addProviders([
