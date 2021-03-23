@@ -2,27 +2,28 @@
 
 import {Timestamp} from '@app/core/repository';
 
-interface PackageItem {
+
+export interface PackageItem {
     code : number;  // 物品编码，暂时是catagoryId
     volume : number;
     rfid ?: string;
 }
 
 export interface PackageEntity {
-    id : string;
+    id : number;
     timestamp : Timestamp;
-    stockId : number;
+    stockId : number;  // 当前所在仓库
     content : PackageItem[];
     status : 'normal' | 'unusual' | 'split';  // 在库/异常/已拆
 }
 
 
 export interface OneQuery {
-    id : string;
+    id : number;
 }
 
 export interface ManyQuery {
-    idList ?: string[];
+    idList ?: number[];
     status ?: string[];
 }
 
@@ -37,10 +38,9 @@ export abstract class AbcPackageQueryRepo {
 
 
 export interface CreateBody {
-    capacity : number;
-    merchandiseId : string[];
+    content : PackageItem[];
     status : 'normal' | 'unusual' | 'split';
-    path : string;
+    stockId : number;
 }
 
 export abstract class AbcPackageSaveRepo {

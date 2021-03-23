@@ -8,7 +8,7 @@ import {AbcPackage} from './interface/service';
 import {PackageService} from './service';
 import {AbcPackageQueryRepo, AbcPackageSaveRepo} from './interface/repository';
 import {PackageQueryRepo, PackageRepository, PackageSaveRepo} from './repository';
-import {PackageModel} from './repository/mongo';
+import {PackageModel} from './repository/postgres';
 
 
 class PackageProvider extends AbcProvider {
@@ -17,7 +17,7 @@ class PackageProvider extends AbcProvider {
         this.addModules([]),
         this.addModules([
             TypeOrmModule.forFeature(
-                [PackageModel, PackageRepository], 'mongo',
+                [PackageModel, PackageRepository], 'postgres',
             ),
         ], false),
         this.addProviders([
