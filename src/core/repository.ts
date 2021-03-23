@@ -2,7 +2,7 @@
 
 import {
     DeepPartial, SaveOptions,
-    Column, Repository,
+    Column, Repository, PrimaryGeneratedColumn,
     MongoRepository, ObjectID, ObjectIdColumn,
 } from 'typeorm';
 
@@ -34,6 +34,13 @@ export class BaseModel {
 export class MongoModel extends BaseModel {
 
     @ObjectIdColumn() id : ObjectID;
+
+}
+
+export class PostgresModel extends BaseModel {
+
+    @PrimaryGeneratedColumn()
+    id : number;
 
 }
 

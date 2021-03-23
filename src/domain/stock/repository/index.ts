@@ -1,6 +1,6 @@
 
 
-import {EntityRepository, ObjectID} from 'typeorm';
+import {EntityRepository} from 'typeorm';
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 
@@ -9,8 +9,7 @@ import {
     StockEntity, AbcStockQueryRepo, AbcStockSaveRepo,
     OneQuery, ManyQuery, CreateBody,
 } from '../interface/repository';
-import {StockModel} from './mongo';
-import {ApiError} from '@app/error';
+import {StockModel} from './postgres';
 
 
 const modelToEntity = (stock : StockModel) : StockEntity => {
@@ -19,14 +18,13 @@ const modelToEntity = (stock : StockModel) : StockEntity => {
         created : created_at, updated : updated_at,
         deleted : deleted_at, finished : finished_at,
     };
-    return {id : id.toString(), timestamp, ...other};
+    return {id, timestamp, ...other};
 };
 
 const entityToModel = (stock : StockEntity) : StockModel => {
-    const {id, timestamp, ...other} = stock;
+    const {timestamp, ...other} = stock;
     const {created, updated, deleted, finished} = timestamp;
     return {
-        id : new ObjectID(id),
         created_at : created, updated_at : updated,
         deleted_at : deleted, finished_at : finished,
         ...other};
@@ -77,36 +75,11 @@ export class StockSaveRepo extends AbcStockSaveRepo {
     }
 
     async modify (target : StockEntity, origin : StockEntity) {
-        const {status, remainCapacity} = target;  // 暂不支持同时修改
+        const {status} = target;
         if (status != origin.status) {
             const model = entityToModel({...origin, status});
             const newModel = await this.repo.save(model);
             return modelToEntity(newModel);
-        }
-        const diff = remainCapacity - origin.remainCapacity;  // 小于0：入库；大于0：出库
-        if (diff < 0) {
-            const {value, ok} = await this.repo.findOneAndUpdate({
-                    _id : new ObjectID(target.id),
-                    status : 'avaliable',
-                    remainCapacity : {$gte : diff},
-                }, {$inc : {remainCapacity : diff}}
-            );
-            if (!ok) {
-                throw new ApiError('仓库容量不足');
-            }
-            return modelToEntity(value);
-        }
-        if (diff > 0) {
-            const {value, ok} = await this.repo.findOneAndUpdate({
-                    _id : new ObjectID(target.id),
-                    status : 'avaliable',
-                    remainCapacity : {$lte : diff},
-                }, {$inc : {remainCapacity : diff}}
-            );
-            if (!ok) {
-                throw new ApiError('库存不足');
-            }
-            return modelToEntity(value);
         }
         return origin;
     }

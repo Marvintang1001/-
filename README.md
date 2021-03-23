@@ -5,16 +5,18 @@
 
 
 ## （二）环境
-- nestjs+typeorm+ts+mongodb
+- nestjs+typeorm+ts+postgres
 
 ## （三）领域
 - catagory：种类
-- merchandise：商品
 - order：货单
 - package：拖（包裹）
 - splitLog：拆分日志
 - stock：仓库
-- user：用户
 
 ## （四）备注
-- 考虑换成mysql可以使用事务，多表同步修改
+- 包裹：异常包括损坏
+- 仓库暂时不要容量这个概念
+- 不要商品领域，包裹代替
+- 分开商品和物品（物品种类）
+- 暂时没有统一物品编码，假设categoryID就是物品编码

@@ -4,23 +4,21 @@ import {Timestamp} from '@app/core/repository';
 
 
 export interface StockEntity {
-    id : string;
+    id : number;
     timestamp : Timestamp;
     address : string;
     name : string;
     status : 'unavailable' | 'available';
-    totalCapacity : number;
-    remainCapacity : number;  // 剩余容量
 }
 
 
 export interface OneQuery {
-    id ?: string;
+    id ?: number;
     name ?: string;
 }
 
 export interface ManyQuery {
-    idList ?: string[];
+    idList ?: number[];
     status ?: string[];
 }
 
@@ -38,7 +36,6 @@ export interface CreateBody {
     address : string;
     name : string;
     status : 'unavailable' | 'available';
-    totalCapacity : number;
 }
 
 export abstract class AbcStockSaveRepo {

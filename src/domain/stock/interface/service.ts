@@ -7,7 +7,6 @@ import {StockEntity, CreateBody} from './repository';
 
 export interface ModifyBO {
     status ?: 'unavailable' | 'available';
-    remainCapacity ?: number;
 }
 
 

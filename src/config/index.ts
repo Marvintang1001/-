@@ -3,12 +3,16 @@
 export default {
     db : [
         {
-            'name' : 'mongo',
-            'type' : 'mongodb',
+            'name' : 'postgres',
+            'type' : 'postgres',
             'host' : 'localhost',
-            'port' : 27017,
-            'database' : 'inventory',
-            'entities' : ['dist/domain/**/repository/mongo.js'],
+            'port' : 5432,
+            'username' : 'admin',
+            'password' : 'app',
+            'database' : 'anniversary',
+            'entities' : ['dist/domain/**/repository/postgres.js'],
+            'migrations' : ['dist/migration/*.js'],
+            'cli' : {'migrationsDir' : 'src/migration'},
         },
     ],
 };

@@ -8,7 +8,7 @@ import {AbcStock} from './interface/service';
 import {StockService} from './service';
 import {AbcStockQueryRepo, AbcStockSaveRepo} from './interface/repository';
 import {StockQueryRepo, StockRepository, StockSaveRepo} from './repository';
-import {StockModel} from './repository/mongo';
+import {StockModel} from './repository/postgres';
 
 
 class StockProvider extends AbcProvider {
@@ -17,7 +17,7 @@ class StockProvider extends AbcProvider {
         this.addModules([]),
         this.addModules([
             TypeOrmModule.forFeature(
-                [StockModel, StockRepository], 'mongo',
+                [StockModel, StockRepository], 'postgres',
             ),
         ], false),
         this.addProviders([

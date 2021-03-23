@@ -18,10 +18,9 @@ export class StockService extends AbcStock {
     }
 
     async modify (origin : StockEntity, modifyBO : ModifyBO) {
-        const {status, remainCapacity} = modifyBO;
+        const {status} = modifyBO;
         const target = {
             ...origin, status : status || origin.status,
-            remainCapacity : remainCapacity || origin.remainCapacity,
         };
         return this.saveRepo.modify(target, origin);
     }
