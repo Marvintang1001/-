@@ -9,23 +9,22 @@ import {
     OrderEntity, AbcOrderQueryRepo, AbcOrderSaveRepo,
     OneQuery, ManyQuery, CreateBody,
 } from '../interface/repository';
-import {OrderModel} from './mongo';
+import {OrderModel} from './postgres';
 
 
 const modelToEntity = (order : OrderModel) : OrderEntity => {
-    const {id, created_at, updated_at, deleted_at, finished_at, ...other} = order;
+    const {created_at, updated_at, deleted_at, finished_at, ...other} = order;
     const timestamp = {
         created : created_at, updated : updated_at,
         deleted : deleted_at, finished : finished_at,
     };
-    return {id : id.toString(), timestamp, ...other};
+    return {timestamp, ...other};
 };
 
 const entityToModel = (order : OrderEntity) : OrderModel => {
-    const {id, timestamp, ...other} = order;
+    const {timestamp, ...other} = order;
     const {created, updated, deleted, finished} = timestamp;
     return {
-        id : new ObjectID(id),
         created_at : created, updated_at : updated,
         deleted_at : deleted, finished_at : finished,
         ...other};
@@ -40,7 +39,7 @@ export class OrderRepository extends BaseMongo<OrderModel> {}
 export class OrderQueryRepo extends AbcOrderQueryRepo {
 
     constructor (
-        @InjectRepository(OrderRepository, 'mongo')
+        @InjectRepository(OrderRepository, 'postgres')
         private readonly repo : OrderRepository,
     ) { super(); }
 
@@ -70,7 +69,7 @@ export class OrderQueryRepo extends AbcOrderQueryRepo {
 export class OrderSaveRepo extends AbcOrderSaveRepo {
 
     constructor (
-        @InjectRepository(OrderRepository, 'mongo')
+        @InjectRepository(OrderRepository, 'postgres')
         private readonly repo : OrderRepository,
     ) { super(); }
 
@@ -80,9 +79,9 @@ export class OrderSaveRepo extends AbcOrderSaveRepo {
     }
 
     async modify (target : OrderEntity, origin : OrderEntity) {
-        const {timestamp, type, loss, status, remark} = target;
+        const {timestamp, type, status, remark} = target;
         const model = entityToModel({
-            ...origin, timestamp, type, loss, status, remark,
+            ...origin, timestamp, type, status, remark,
         });
         const newModel = await this.repo.save(model);
         return modelToEntity(newModel);

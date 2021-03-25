@@ -10,7 +10,7 @@ import {AbcOrderQueryRepo, AbcOrderSaveRepo} from './interface/repository';
 import {OrderQueryRepo, OrderRepository, OrderSaveRepo} from './repository';
 import {PackageModule} from '../package';
 import {StockModule} from '../stock';
-import {OrderModel} from './repository/mongo';
+import {OrderModel} from './repository/postgres';
 
 
 class OrderProvider extends AbcProvider {
@@ -19,7 +19,7 @@ class OrderProvider extends AbcProvider {
         this.addModules([PackageModule, StockModule]),
         this.addModules([
             TypeOrmModule.forFeature(
-                [OrderModel, OrderRepository], 'mongo',
+                [OrderModel, OrderRepository], 'postgres',
             ),
         ], false),
         this.addProviders([

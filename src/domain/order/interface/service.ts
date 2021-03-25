@@ -9,8 +9,7 @@ import {OrderEntity, CreateBody} from './repository';
 export interface ModifyBO {
     finished ?: number;
     type ?: string;
-    loss ?: number;
-    status ?: 'start' | 'finish' | 'return' | 'unusual';
+    status ?: 'process' | 'finish' | 'return' | 'unusual';
     remark ?: string;
 }
 
@@ -21,7 +20,7 @@ export abstract class AbcOrder {
     abstract modify (origin : OrderEntity, modifyBO : ModifyBO) :
     Promise<OrderEntity>;
 
-    abstract inStock (order : OrderEntity, back ?: boolean, loss ?: number) :
+    abstract inStock (order : OrderEntity, back ?: boolean) :
     Promise<Either<OrderEntity>>;
 
 }

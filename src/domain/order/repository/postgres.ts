@@ -2,15 +2,13 @@
 
 import {Entity, Column} from 'typeorm';
 
-import {MongoModel} from '@app/core/repository';
+import {PostgresModel} from '@app/core/repository';
 
 
 @Entity({name : 'order'})
-export class OrderModel extends MongoModel {
+export class OrderModel extends PostgresModel {
 
-    @Column() packageId : string;
-
-    @Column({nullable : true}) loss ?: number;
+    @Column() packageId : number;
 
     @Column() origin : string;
 
@@ -21,7 +19,6 @@ export class OrderModel extends MongoModel {
     @Column({nullable : true}) remark ?: string;
 
     @Column()
-    status : 'start' | 'finish' | 'return' | 'unusual';
-
+    status : 'process' | 'finish' | 'return' | 'unusual';
 
 }

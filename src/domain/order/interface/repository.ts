@@ -4,29 +4,28 @@ import {Timestamp} from '@app/core/repository';
 
 
 export interface OrderEntity {
-    id : string;
+    id : number;
     timestamp : Timestamp;
     origin : string;
     target : string;
-    packageId : string;
-    type : string;
-    loss ?: number;
-    status : 'start' | 'finish' | 'return' | 'unusual';
+    packageId : number;
+    type : string;  // 区分采购、调货、出货
+    status : 'process' | 'finish' | 'return' | 'unusual';
     remark ?: string;
 }
 
 
 export interface OneQuery {
-    id : string;
+    id : number;
 }
 
 export interface ManyQuery {
-    idList ?: string[];
+    idList ?: number[];
     created ?: number;
     finished ?: number;
-    origin ?: string[];
-    target ?: string[];
-    packageId ?: string[];
+    origin ?: (number|string)[];
+    target ?: (number|string)[];
+    packageId ?: number[];
     status ?: string[];
 }
 
@@ -43,10 +42,9 @@ export abstract class AbcOrderQueryRepo {
 export interface CreateBody {
     origin : string;
     target : string;
-    packageId : string;
-    type : string;  // purchase
-    loss ?: number;
-    status : 'start' | 'finish' | 'return' | 'unusual';
+    packageId : number;
+    type : string;
+    status : 'process' | 'finish' | 'return' | 'unusual';
     remark ?: string;
 }
 
