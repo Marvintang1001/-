@@ -4,7 +4,7 @@ import {EntityRepository} from 'typeorm';
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 
-import {BaseMongo} from '@app/core/repository';
+import {BasePostgres} from '@app/core/repository';
 import {
     PackageEntity, AbcPackageQueryRepo, AbcPackageSaveRepo,
     OneQuery, ManyQuery, CreateBody,
@@ -32,7 +32,7 @@ const entityToModel = (package_ : PackageEntity) : PackageModel => {
 
 
 @EntityRepository(PackageModel)
-export class PackageRepository extends BaseMongo<PackageModel> {}
+export class PackageRepository extends BasePostgres<PackageModel> {}
 
 
 @Injectable()
@@ -50,10 +50,11 @@ export class PackageQueryRepo extends AbcPackageQueryRepo {
     }
 
     async fetchMany (param : ManyQuery) {
-        const {idList, status} = param;
+        const {idList, status, stockId} = param;
         const result = await this.repo.find({where : {
             _id : {$in : idList},
             status : {$in : status},
+            stockId : {$in : stockId},
         }});
         return result.map(x => modelToEntity(x));
     }

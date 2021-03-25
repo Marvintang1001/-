@@ -12,7 +12,7 @@ export interface PackageItem {
 export interface PackageEntity {
     id : number;
     timestamp : Timestamp;
-    stockId : number;  // 当前所在仓库
+    stockId : string;  // 当前所在仓库
     content : PackageItem[];
     status : 'normal' | 'unusual' | 'split';  // 在库/异常/已拆
 }
@@ -25,6 +25,7 @@ export interface OneQuery {
 export interface ManyQuery {
     idList ?: number[];
     status ?: string[];
+    stockId : string[];
 }
 
 
@@ -40,7 +41,7 @@ export abstract class AbcPackageQueryRepo {
 export interface CreateBody {
     content : PackageItem[];
     status : 'normal' | 'unusual' | 'split';
-    stockId : number;
+    stockId : string;
 }
 
 export abstract class AbcPackageSaveRepo {

@@ -4,7 +4,7 @@ import {EntityRepository, ObjectID} from 'typeorm';
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 
-import {BaseMongo} from '@app/core/repository';
+import {BasePostgres} from '@app/core/repository';
 import {
     SplitLogEntity, AbcSplitLogQueryRepo, AbcSplitLogSaveRepo,
     OneQuery, ManyQuery, CreateBody,
@@ -33,7 +33,7 @@ const modelToEntity = (splitLog : SplitLogModel) : SplitLogEntity => {
 
 
 @EntityRepository(SplitLogModel)
-export class SplitLogRepository extends BaseMongo<SplitLogModel> {}
+export class SplitLogRepository extends BasePostgres<SplitLogModel> {}
 
 
 @Injectable()

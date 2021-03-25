@@ -4,7 +4,7 @@ import {EntityRepository} from 'typeorm';
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 
-import {BaseMongo} from '@app/core/repository';
+import {BasePostgres} from '@app/core/repository';
 import {
     StockEntity, AbcStockQueryRepo, AbcStockSaveRepo,
     OneQuery, ManyQuery, CreateBody,
@@ -32,14 +32,14 @@ const entityToModel = (stock : StockEntity) : StockModel => {
 
 
 @EntityRepository(StockModel)
-export class StockRepository extends BaseMongo<StockModel> {}
+export class StockRepository extends BasePostgres<StockModel> {}
 
 
 @Injectable()
 export class StockQueryRepo extends AbcStockQueryRepo {
 
     constructor (
-        @InjectRepository(StockRepository, 'mongo')
+        @InjectRepository(StockRepository, 'postgres')
         private readonly repo : StockRepository,
     ) { super(); }
 
@@ -65,7 +65,7 @@ export class StockQueryRepo extends AbcStockQueryRepo {
 export class StockSaveRepo extends AbcStockSaveRepo {
 
     constructor (
-        @InjectRepository(StockRepository, 'mongo')
+        @InjectRepository(StockRepository, 'postgres')
         private readonly repo : StockRepository,
     ) { super(); }
 

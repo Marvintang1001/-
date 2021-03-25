@@ -7,7 +7,7 @@ import {PackageEntity, CreateBody} from './repository';
 
 export interface ModifyBO {
     status ?: 'normal' | 'unusual' | 'split';
-    stockId ?: number;
+    stockId ?: string;
 }
 
 

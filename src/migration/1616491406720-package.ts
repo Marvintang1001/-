@@ -14,7 +14,7 @@ export class package1616491406720 implements MigrationInterface {
                 deleted_at bigint,
                 id integer NOT NULL PRIMARY KEY
                     DEFAULT nextval('package_id_seq'),
-                stockId integer NOT NULL,
+                stockId character varying(128) NOT NULL,
                 remark character varying(128) NOT NULL,
                 content jsonb NOT NULL
             )

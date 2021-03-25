@@ -4,7 +4,7 @@ import {EntityRepository, ObjectID} from 'typeorm';
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 
-import {BaseMongo} from '@app/core/repository';
+import {BasePostgres} from '@app/core/repository';
 import {
     CatagoryEntity, AbcCatagoryQueryRepo, AbcCatagorySaveRepo,
     OneQuery, ManyQuery, CreateBody,
@@ -32,7 +32,7 @@ const entityToModel = (Catagory : CatagoryEntity) : CatagoryModel => {
 
 
 @EntityRepository(CatagoryModel)
-export class CatagoryRepository extends BaseMongo<CatagoryModel> {}
+export class CatagoryRepository extends BasePostgres<CatagoryModel> {}
 
 
 @Injectable()

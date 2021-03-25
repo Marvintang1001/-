@@ -4,7 +4,7 @@ import {EntityRepository, ObjectID} from 'typeorm';
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 
-import {BaseMongo} from '@app/core/repository';
+import {BasePostgres} from '@app/core/repository';
 import {
     OrderEntity, AbcOrderQueryRepo, AbcOrderSaveRepo,
     OneQuery, ManyQuery, CreateBody,
@@ -32,7 +32,7 @@ const entityToModel = (order : OrderEntity) : OrderModel => {
 
 
 @EntityRepository(OrderModel)
-export class OrderRepository extends BaseMongo<OrderModel> {}
+export class OrderRepository extends BasePostgres<OrderModel> {}
 
 
 @Injectable()

@@ -81,3 +81,5 @@ const RefactorSave = <
 
 
 export const BaseMongo = RefactorSave(MongoRepository);
+
+export const BasePostgres = RefactorSave(Repository);
