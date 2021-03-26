@@ -9,16 +9,16 @@ import {
     SplitLogEntity, AbcSplitLogQueryRepo, AbcSplitLogSaveRepo,
     OneQuery, ManyQuery, CreateBody,
 } from '../interface/repository';
-import {SplitLogModel} from './mongo';
+import {SplitLogModel} from './postgres';
 
 
 const modelToEntity = (splitLog : SplitLogModel) : SplitLogEntity => {
-    const {id, created_at, updated_at, deleted_at, finished_at, ...other} = splitLog;
+    const {created_at, updated_at, deleted_at, finished_at, ...other} = splitLog;
     const timestamp = {
         created : created_at, updated : updated_at,
         deleted : deleted_at, finished : finished_at,
     };
-    return {id : id.toString(), timestamp, ...other};
+    return {timestamp, ...other};
 };
 
 // const entityToModel = (splitLog : SplitLogEntity) : SplitLogModel => {
@@ -40,7 +40,7 @@ export class SplitLogRepository extends BasePostgres<SplitLogModel> {}
 export class SplitLogQueryRepo extends AbcSplitLogQueryRepo {
 
     constructor (
-        @InjectRepository(SplitLogRepository, 'mongo')
+        @InjectRepository(SplitLogRepository, 'postgres')
         private readonly repo : SplitLogRepository,
     ) { super(); }
 
@@ -66,7 +66,7 @@ export class SplitLogQueryRepo extends AbcSplitLogQueryRepo {
 export class SplitLogSaveRepo extends AbcSplitLogSaveRepo {
 
     constructor (
-        @InjectRepository(SplitLogRepository, 'mongo')
+        @InjectRepository(SplitLogRepository, 'postgres')
         private readonly repo : SplitLogRepository,
     ) { super(); }
 

@@ -1,13 +1,15 @@
 
 
 import {Injectable} from '@nestjs/common';
+import {any, flatten, groupBy, mergeAll, mergeWith} from 'ramda';
 
 import {AbcSplitLog} from '../interface/service';
 import {
     AbcSplitLogSaveRepo, CreateBody, SplitLogEntity,
 } from '../interface/repository';
-import {PackageEntity} from '@app/domain/package/interface/repository';
+import {PackageEntity, PackageItem} from '@app/domain/package/interface/repository';
 import {AbcPackage} from '@app/domain/package/interface/service';
+import {ApiError} from '@app/error';
 
 
 @Injectable()
@@ -22,28 +24,48 @@ export class SplitLogService extends AbcSplitLog {
         return this.saveRepo.save(storage);
     }
 
-    async split (origin : PackageEntity, target : number[]) {
-        const path = origin.path.split('/').pop();
+    async split (origin : PackageEntity, target : PackageItem[][]) {
+        const {status, stockId, id, content} = origin;
+        if (status != 'normal') throw new ApiError('被拆分包裹状态异常或已拆分');
+        const contentObj = groupBy(x => x.code.toString(), content);
+        const targetObjList = target.map(x => groupBy(x => x.code.toString(), x));
+        const targetObj = targetObjList.reduce(
+            (x, y) => mergeWith((a, b) => a[0].volume + b[0].volume, x, y), {});
+        for (const x of Object.keys(targetObj)) {
+            const content = contentObj[x][0];
+            if (content?.volume < targetObj[x]) {
+                throw new ApiError(`该物品(${content})无法拆分成目标包裹(${x})`);
+            }
+        }
+
         await this.packageService.modify(origin, {status : 'split'});
-        const newList = await Promise.all(target.map(async capacity => {
+        const newList = await Promise.all(target.map(async content => {
             return await this.packageService.create({
-                capacity, merchandiseId : origin.merchandiseId,
-                status : 'normal', path,
+                stockId, status : 'normal', content,
             });
         }));
         const idList = newList.map(x => x.id);
-        await this.create({origin : [origin.id], end : idList});
+        await this.create({origin : [id], end : idList});
         return newList;
     }
 
     async combine (origin : PackageEntity[]) {
-        const {merchandiseId, path} = origin[0];
-        const capacity = origin.map(x => x.capacity).reduce((x, y) => x + y, 0);
+        // 判断这些包裹是否出现在同一个地方并且状态都为normal
+        if (any(x => x != 'normal')(origin.map(x => x.status))) {
+            throw new ApiError('存在异常或已拆分包裹');
+        }
+        const stockIdList = origin.map(x => x.stockId);
+        if (stockIdList.length > 1) {
+            throw new ApiError('包裹不在同一个仓库');
+        }
         await Promise.all(origin.map(async x => {
             return await this.packageService.modify(x, {status : 'split'});
-        }));
+        }));  // TODO: 事务？
+
         const newOne = await this.packageService.create({
-            merchandiseId, capacity, status : 'normal', path : path.split('/').pop()});
+            stockId : stockIdList[0], status : 'normal',
+            content : flatten(origin.map(x => x.content)),
+        });
         await this.create({origin : origin.map(x => x.id), end : [newOne.id]});
         return newOne;
     }

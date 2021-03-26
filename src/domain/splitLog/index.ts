@@ -8,7 +8,7 @@ import {AbcSplitLog} from './interface/service';
 import {SplitLogService} from './service';
 import {AbcSplitLogQueryRepo, AbcSplitLogSaveRepo} from './interface/repository';
 import {SplitLogQueryRepo, SplitLogRepository, SplitLogSaveRepo} from './repository';
-import {SplitLogModel} from './repository/mongo';
+import {SplitLogModel} from './repository/postgres';
 import {PackageModule} from '../package';
 
 
@@ -18,7 +18,7 @@ class SplitLogProvider extends AbcProvider {
         this.addModules([PackageModule]),
         this.addModules([
             TypeOrmModule.forFeature(
-                [SplitLogModel, SplitLogRepository], 'mongo',
+                [SplitLogModel, SplitLogRepository], 'postgres',
             ),
         ], false),
         this.addProviders([
