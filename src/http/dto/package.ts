@@ -1,18 +1,19 @@
 
 
-import {IsArray, IsNumber, IsOptional, IsString} from 'class-validator';
+import {IsArray, IsNumber, ArrayUnique} from 'class-validator';
 
+import {PackageItem} from '@app/domain/package/interface/repository';
 
 export class SplitDto {
 
-    @IsString() origin : string;
+    @IsNumber() origin : number;
 
-    @IsArray() target : number[];  // 容量分配，如果超出origin容量报错，少于容量会把剩余的分多一个包
+    @ArrayUnique() content : PackageItem[][];
 
 }
 
 export class CombineDto {
 
-    @IsArray() origin : string[];
+    @IsArray() origin : number[];
 
 }

@@ -25,7 +25,7 @@ export interface OneQuery {
 export interface ManyQuery {
     idList ?: number[];
     status ?: string[];
-    stockId : string[];
+    stockId ?: string[];
 }
 
 

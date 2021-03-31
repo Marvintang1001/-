@@ -22,19 +22,17 @@ export class PurchaseController {
     // 单个拆成多个
     @Post('split')
     async split (@Body() body : SplitDto) {
-        const {origin, target} = body;
+        const {origin, content} = body;
         const originPackage = await this.packageQuery.fetchOne({id : origin});
         if (!originPackage || originPackage.status != 'normal') {
-            return {code : 301, error : '非法的包裹'};
+            return {code : 3001, error : '非法的包裹'};
         }
-        const targetSum = target.reduce((x, y) => x + y, 0);
-        if (targetSum > originPackage.capacity) {
-            return {code : 302, error : '超出原有包裹容量'};
+        try {
+            const newList = await this.splitLogService.split(originPackage, content);
+            return {code : 0, data : newList};
+        } catch (e) {
+            return {code : 3002, error : e};
         }
-        const rest = originPackage.capacity - targetSum;
-        if (rest > 0) target.push(rest);
-        const newList = await this.splitLogService.split(originPackage, target);
-        return {code : 0, data : newList};
     }
 
     // 多个组合成单个：类型要一致，所有状态都是‘normal'
@@ -42,16 +40,14 @@ export class PurchaseController {
     async combine (@Body() {origin} : CombineDto) {
         const originList = await this.packageQuery.fetchMany({idList : origin});
         if (originList.length < 2) {
-            return {code : 303, error : '组合需要大于一个包裹'};
+            return {code : 3003, error : '组合需要大于一个包裹'};
         }
-        if (
-            all((x) => x.status === 'normal', originList) &&
-            all((x) => x.merchandiseId === originList[0].merchandiseId, originList)
-        ) {
+        try {
             const newPackage = await this.splitLogService.combine(originList);
             return {code : 0, data : newPackage};
+        } catch (e) {
+            return {code : 3004, error : e};
         }
-        return {code : 304, error : '提供的包裹类型不统一'};
     }
 
 }

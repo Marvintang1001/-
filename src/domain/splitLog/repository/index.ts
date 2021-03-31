@@ -4,7 +4,7 @@ import {EntityRepository, ObjectID} from 'typeorm';
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 
-import {BasePostgres} from '@app/core/repository';
+import {BasePostgres, modelToEntity} from '@app/core/repository';
 import {
     SplitLogEntity, AbcSplitLogQueryRepo, AbcSplitLogSaveRepo,
     OneQuery, ManyQuery, CreateBody,
@@ -12,24 +12,8 @@ import {
 import {SplitLogModel} from './postgres';
 
 
-const modelToEntity = (splitLog : SplitLogModel) : SplitLogEntity => {
-    const {created_at, updated_at, deleted_at, finished_at, ...other} = splitLog;
-    const timestamp = {
-        created : created_at, updated : updated_at,
-        deleted : deleted_at, finished : finished_at,
-    };
-    return {timestamp, ...other};
-};
-
-// const entityToModel = (splitLog : SplitLogEntity) : SplitLogModel => {
-//     const {id, timestamp, ...other} = splitLog;
-//     const {created, updated, deleted, finished} = timestamp;
-//     return {
-//         id : new ObjectID(id),
-//         created_at : created, updated_at : updated,
-//         deleted_at : deleted, finished_at : finished,
-//         ...other};
-// };
+const splitModelToEntity =
+    (splitLog : SplitLogModel) : SplitLogEntity => modelToEntity(splitLog);
 
 
 @EntityRepository(SplitLogModel)
@@ -47,7 +31,7 @@ export class SplitLogQueryRepo extends AbcSplitLogQueryRepo {
     async fetchOne (query : OneQuery) {
         const {id, ...other} = query;
         const SplitLogModel = await this.repo.findOne(id ? id : other);
-        return SplitLogModel ? modelToEntity(SplitLogModel) : SplitLogModel;
+        return SplitLogModel ? splitModelToEntity(SplitLogModel) : SplitLogModel;
     }
 
     async fetchMany (param : ManyQuery) {
@@ -57,7 +41,7 @@ export class SplitLogQueryRepo extends AbcSplitLogQueryRepo {
             origin : {$in : origin},
             end : {$in : end},
         }});
-        return result.map(x => modelToEntity(x));
+        return result.map(x => splitModelToEntity(x));
     }
 
 }
