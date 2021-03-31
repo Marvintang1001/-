@@ -83,3 +83,22 @@ const RefactorSave = <
 export const BaseMongo = RefactorSave(MongoRepository);
 
 export const BasePostgres = RefactorSave(Repository);
+
+export const entityToModel =
+<T extends {timestamp : Timestamp}>(entity : T) => {
+    const {timestamp, ...other} = entity;
+    const {created, updated, deleted, finished} = timestamp;
+    return {
+        created_at : created, updated_at : updated,
+        deleted_at : deleted, finished_at : finished,
+        ...other};
+};
+
+export const modelToEntity = <T extends BaseModel>(modal : T) => {
+    const {created_at, updated_at, deleted_at, finished_at, ...other} = modal;
+    const timestamp = {
+        created : created_at, updated : updated_at,
+        deleted : deleted_at, finished : finished_at,
+    };
+    return {timestamp, ...other};
+};

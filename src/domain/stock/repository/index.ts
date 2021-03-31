@@ -4,7 +4,7 @@ import {EntityRepository} from 'typeorm';
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 
-import {BasePostgres} from '@app/core/repository';
+import {BasePostgres, entityToModel, modelToEntity} from '@app/core/repository';
 import {
     StockEntity, AbcStockQueryRepo, AbcStockSaveRepo,
     OneQuery, ManyQuery, CreateBody,
@@ -12,23 +12,9 @@ import {
 import {StockModel} from './postgres';
 
 
-const modelToEntity = (stock : StockModel) : StockEntity => {
-    const {id, created_at, updated_at, deleted_at, finished_at, ...other} = stock;
-    const timestamp = {
-        created : created_at, updated : updated_at,
-        deleted : deleted_at, finished : finished_at,
-    };
-    return {id, timestamp, ...other};
-};
+const stockModelToEntity = (x : StockModel) : StockEntity => modelToEntity(x);
 
-const entityToModel = (stock : StockEntity) : StockModel => {
-    const {timestamp, ...other} = stock;
-    const {created, updated, deleted, finished} = timestamp;
-    return {
-        created_at : created, updated_at : updated,
-        deleted_at : deleted, finished_at : finished,
-        ...other};
-};
+const stockEntityToModel = (x : StockEntity) : StockModel => entityToModel(x);
 
 
 @EntityRepository(StockModel)
@@ -46,17 +32,16 @@ export class StockQueryRepo extends AbcStockQueryRepo {
     async fetchOne (query : OneQuery) {
         const {id, ...other} = query;
         const StockModel = await this.repo.findOne(id ? id : other);
-        return StockModel ? modelToEntity(StockModel) : StockModel;
+        return StockModel ? stockModelToEntity(StockModel) : StockModel;
     }
 
     async fetchMany (param : ManyQuery) {
         const {idList, status} = param;
         const result = await this.repo.find({where : {
             _id : {$in : idList},
-            origin : {$in : origin},
             status : {$in : status},
         }});
-        return result.map(x => modelToEntity(x));
+        return result.map(x => stockModelToEntity(x));
     }
 
 }
@@ -71,15 +56,15 @@ export class StockSaveRepo extends AbcStockSaveRepo {
 
     async save (Stock : CreateBody) {
         const model = await this.repo.save(Stock);
-        return modelToEntity(model);
+        return stockModelToEntity(model);
     }
 
     async modify (target : StockEntity, origin : StockEntity) {
         const {status} = target;
         if (status != origin.status) {
-            const model = entityToModel({...origin, status});
+            const model = stockEntityToModel({...origin, status});
             const newModel = await this.repo.save(model);
-            return modelToEntity(newModel);
+            return stockModelToEntity(newModel);
         }
         return origin;
     }
