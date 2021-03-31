@@ -12,7 +12,7 @@ export interface PackageItem {
 export interface PackageEntity {
     id : number;
     timestamp : Timestamp;
-    stockId : string;  // 当前所在仓库
+    stockId : string;  //TODO: 当前所在仓库，含购入或出库地
     content : PackageItem[];
     status : 'normal' | 'unusual' | 'split';  // 在库/异常/已拆
 }

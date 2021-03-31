@@ -1,10 +1,10 @@
 
 
-import {EntityRepository, ObjectID} from 'typeorm';
+import {EntityRepository} from 'typeorm';
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 
-import {BasePostgres} from '@app/core/repository';
+import {BasePostgres, modelToEntity, entityToModel} from '@app/core/repository';
 import {
     OrderEntity, AbcOrderQueryRepo, AbcOrderSaveRepo,
     OneQuery, ManyQuery, CreateBody,
@@ -12,28 +12,13 @@ import {
 import {OrderModel} from './postgres';
 
 
-const modelToEntity = (order : OrderModel) : OrderEntity => {
-    const {created_at, updated_at, deleted_at, finished_at, ...other} = order;
-    const timestamp = {
-        created : created_at, updated : updated_at,
-        deleted : deleted_at, finished : finished_at,
-    };
-    return {timestamp, ...other};
-};
+const orderModelToEntity = (order : OrderModel) : OrderEntity => modelToEntity(order);
 
-const entityToModel = (order : OrderEntity) : OrderModel => {
-    const {timestamp, ...other} = order;
-    const {created, updated, deleted, finished} = timestamp;
-    return {
-        created_at : created, updated_at : updated,
-        deleted_at : deleted, finished_at : finished,
-        ...other};
-};
+const orderEntityToModel = (order : OrderEntity) : OrderModel => entityToModel(order);
 
 
 @EntityRepository(OrderModel)
 export class OrderRepository extends BasePostgres<OrderModel> {}
-
 
 @Injectable()
 export class OrderQueryRepo extends AbcOrderQueryRepo {
@@ -46,7 +31,7 @@ export class OrderQueryRepo extends AbcOrderQueryRepo {
     async fetchOne (query : OneQuery) {
         const {id, ...other} = query;
         const OrderModel = await this.repo.findOne(id ? id : other);
-        return OrderModel ? modelToEntity(OrderModel) : OrderModel;
+        return OrderModel ? orderModelToEntity(OrderModel) : OrderModel;
     }
 
     async fetchMany (param : ManyQuery) {
@@ -60,7 +45,7 @@ export class OrderQueryRepo extends AbcOrderQueryRepo {
             created_at : {$gte : created},
             finished_at : {$lte : finished},
         }});
-        return result.map((x : OrderModel) => modelToEntity(x));
+        return result.map((x : OrderModel) => orderModelToEntity(x));
     }
 
 }
@@ -75,16 +60,16 @@ export class OrderSaveRepo extends AbcOrderSaveRepo {
 
     async save (order : CreateBody) {
         const model = await this.repo.save(order);
-        return modelToEntity(model);
+        return orderModelToEntity(model);
     }
 
     async modify (target : OrderEntity, origin : OrderEntity) {
         const {timestamp, type, status, remark} = target;
-        const model = entityToModel({
+        const model = orderEntityToModel({
             ...origin, timestamp, type, status, remark,
         });
         const newModel = await this.repo.save(model);
-        return modelToEntity(newModel);
+        return orderModelToEntity(newModel);
     }
 
 }

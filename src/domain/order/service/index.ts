@@ -27,25 +27,26 @@ export class OrderService extends AbcOrder {
     }
 
     async modify (origin : OrderEntity, modifyBO : ModifyBO) {
-        const {type, status, remark, finished} = modifyBO;
+        const {type, status, remark} = modifyBO;
         const timestamp = origin.timestamp;
-        timestamp.finished = finished;
+        timestamp.finished = status == 'finish' ?
+            (new Date()).valueOf() : timestamp.finished;
         const target = {
             ...origin, status : status || origin.status,
             type : type || origin.type,
             remark : remark || origin.remark,
-            timestamp : finished ? timestamp : origin.timestamp,
+            timestamp,
         };
         return this.saveRepo.modify(target, origin);
     }
 
-    // 落库：对应库存增加（库存是否有剩余容量）；包裹路径、状态更新；采购单状态更新
+    // 落库：暂不考虑库存容量大小；包裹stockId更新；采购单状态更新
     async inStock (order : OrderEntity, back : boolean = false) {
         const package_ = await this.packageQuery.fetchOne({id : order.packageId});
         const id = back ? order.origin : order.target;
         if (!!parseInt(id)) {
             const stock = await this.stockQuery.fetchOne({id : parseInt(id)});
-            if (stock.status != 'available') return Left.of(order);
+            if (stock?.status != 'available') return Left.of(order);
         }
         await this.packageService.modify(package_, {stockId : id});
         const reuslt = await this.modify(order,

@@ -4,7 +4,7 @@ import {EntityRepository} from 'typeorm';
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 
-import {BasePostgres} from '@app/core/repository';
+import {BasePostgres, entityToModel, modelToEntity} from '@app/core/repository';
 import {
     PackageEntity, AbcPackageQueryRepo, AbcPackageSaveRepo,
     OneQuery, ManyQuery, CreateBody,
@@ -12,28 +12,15 @@ import {
 import {PackageModel} from './postgres';
 
 
-const modelToEntity = (package_ : PackageModel) : PackageEntity => {
-    const {created_at, updated_at, deleted_at, finished_at, ...other} = package_;
-    const timestamp = {
-        created : created_at, updated : updated_at,
-        deleted : deleted_at, finished : finished_at,
-    };
-    return {timestamp, ...other};
-};
+const packageModelToEntity =
+    (package_ : PackageModel) : PackageEntity => modelToEntity(package_);
 
-const entityToModel = (package_ : PackageEntity) : PackageModel => {
-    const {timestamp, ...other} = package_;
-    const {created, updated, deleted, finished} = timestamp;
-    return {
-        created_at : created, updated_at : updated,
-        deleted_at : deleted, finished_at : finished,
-        ...other};
-};
+const packageEntityToModel =
+    (package_ : PackageEntity) : PackageModel => entityToModel(package_);
 
 
 @EntityRepository(PackageModel)
 export class PackageRepository extends BasePostgres<PackageModel> {}
-
 
 @Injectable()
 export class PackageQueryRepo extends AbcPackageQueryRepo {
@@ -46,7 +33,7 @@ export class PackageQueryRepo extends AbcPackageQueryRepo {
     async fetchOne (query : OneQuery) {
         const {id, ...other} = query;
         const packageModel = await this.repo.findOne(id ? id : other);
-        return packageModel ? modelToEntity(packageModel) : packageModel;
+        return packageModel ? packageModelToEntity(packageModel) : packageModel;
     }
 
     async fetchMany (param : ManyQuery) {
@@ -56,7 +43,7 @@ export class PackageQueryRepo extends AbcPackageQueryRepo {
             status : {$in : status},
             stockId : {$in : stockId},
         }});
-        return result.map(x => modelToEntity(x));
+        return result.map(x => packageModelToEntity(x));
     }
 
 }
@@ -71,14 +58,14 @@ export class PackageSaveRepo extends AbcPackageSaveRepo {
 
     async save (package_ : CreateBody) {
         const model = await this.repo.save(package_);
-        return modelToEntity(model);
+        return packageModelToEntity(model);
     }
 
     async modify (target : PackageEntity, origin : PackageEntity) {
         const {status, stockId} = target;
-        const model = entityToModel({...origin, status, stockId});
+        const model = packageEntityToModel({...origin, status, stockId});
         const newModel = await this.repo.save(model);
-        return modelToEntity(newModel);
+        return packageModelToEntity(newModel);
     }
 
 }

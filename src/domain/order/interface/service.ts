@@ -7,7 +7,6 @@ import {OrderEntity, CreateBody} from './repository';
 
 
 export interface ModifyBO {
-    finished ?: number;
     type ?: string;
     status ?: 'process' | 'finish' | 'return' | 'unusual';
     remark ?: string;

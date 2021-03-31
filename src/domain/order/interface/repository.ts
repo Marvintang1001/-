@@ -23,8 +23,8 @@ export interface ManyQuery {
     idList ?: number[];
     created ?: number;
     finished ?: number;
-    origin ?: (number|string)[];
-    target ?: (number|string)[];
+    origin ?: string[];
+    target ?: string[];
     packageId ?: number[];
     status ?: string[];
 }
