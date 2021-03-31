@@ -1,7 +1,7 @@
 # 仓储管理模型
 
 ## （一）指令
-- 生成typeorm迁移脚本：typeorm migration:create -n stock -d src/migration
+- 生成typeorm迁移脚本：typeorm migration:create -n ${表名称} -d src/migration
 
 ## （二）环境
 - nestjs+typeorm+ts+postgres

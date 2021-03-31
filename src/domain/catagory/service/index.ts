@@ -4,8 +4,9 @@ import {Injectable} from '@nestjs/common';
 
 import {AbcCatagory, ModifyBO} from '../interface/service';
 import {
-    AbcCatagorySaveRepo, CreateBody, CatagoryEntity,
+    AbcCatagorySaveRepo, CreateBody, CatagoryEntity, AbcCatagoryQueryRepo,
 } from '../interface/repository';
+import {ApiError} from '@app/error';
 
 
 @Injectable()
@@ -13,10 +14,13 @@ export class CatagoryService extends AbcCatagory {
 
     constructor (
         private readonly saveRepo : AbcCatagorySaveRepo,
+        private readonly queryRepo : AbcCatagoryQueryRepo,
     ) { super(); }
 
-    async create (storage : CreateBody) : Promise<CatagoryEntity> {
-        return this.saveRepo.save(storage);
+    async create (catagory : CreateBody) : Promise<CatagoryEntity> {
+        const repeat = await this.queryRepo.fetchOne({name : catagory.name});
+        if (!!repeat) throw new ApiError('catagory\'s name is repeated!');
+        return this.saveRepo.save(catagory);
     }
 
     async modify (origin : CatagoryEntity, modifyBO : ModifyBO) {

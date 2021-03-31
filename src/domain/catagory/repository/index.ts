@@ -1,10 +1,10 @@
 
 
-import {EntityRepository, ObjectID} from 'typeorm';
+import {EntityRepository} from 'typeorm';
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 
-import {BasePostgres} from '@app/core/repository';
+import {BasePostgres, entityToModel, modelToEntity} from '@app/core/repository';
 import {
     CatagoryEntity, AbcCatagoryQueryRepo, AbcCatagorySaveRepo,
     OneQuery, ManyQuery, CreateBody,
@@ -12,28 +12,15 @@ import {
 import {CatagoryModel} from './postgres';
 
 
-const modelToEntity = (Catagory : CatagoryModel) : CatagoryEntity => {
-    const {created_at, updated_at, deleted_at, finished_at, ...other} = Catagory;
-    const timestamp = {
-        created : created_at, updated : updated_at,
-        deleted : deleted_at, finished : finished_at,
-    };
-    return {timestamp, ...other};
-};
+const catagoryModelToEntity =
+    (Catagory : CatagoryModel) : CatagoryEntity => modelToEntity(Catagory);
 
-const entityToModel = (Catagory : CatagoryEntity) : CatagoryModel => {
-    const {timestamp, ...other} = Catagory;
-    const {created, updated, deleted, finished} = timestamp;
-    return {
-        created_at : created, updated_at : updated,
-        deleted_at : deleted, finished_at : finished,
-        ...other};
-};
+const catagoryEntityToModel =
+    (catagory : CatagoryEntity) : CatagoryModel => entityToModel(catagory);
 
 
 @EntityRepository(CatagoryModel)
 export class CatagoryRepository extends BasePostgres<CatagoryModel> {}
-
 
 @Injectable()
 export class CatagoryQueryRepo extends AbcCatagoryQueryRepo {
@@ -46,7 +33,7 @@ export class CatagoryQueryRepo extends AbcCatagoryQueryRepo {
     async fetchOne (query : OneQuery) {
         const {id, ...other} = query;
         const CatagoryModel = await this.repo.findOne(id ? id : other);
-        return CatagoryModel ? modelToEntity(CatagoryModel) : CatagoryModel;
+        return CatagoryModel ? catagoryModelToEntity(CatagoryModel) : CatagoryModel;
     }
 
     async fetchMany (param : ManyQuery) {
@@ -54,7 +41,7 @@ export class CatagoryQueryRepo extends AbcCatagoryQueryRepo {
         const result = await this.repo.find({where : {
             _id : {$in : idList},
         }});
-        return result.map(x => modelToEntity(x));
+        return result.map(x => catagoryModelToEntity(x));
     }
 
 }
@@ -69,14 +56,14 @@ export class CatagorySaveRepo extends AbcCatagorySaveRepo {
 
     async save (catagory : CreateBody) {
         const model = await this.repo.save(catagory);
-        return modelToEntity(model);
+        return catagoryModelToEntity(model);
     }
 
     async modify (target : CatagoryEntity, origin : CatagoryEntity) {
         const {remark} = target;
-        const model = entityToModel({...origin, remark});
+        const model = catagoryEntityToModel({...origin, remark});
         const newModel = await this.repo.save(model);
-        return modelToEntity(newModel);
+        return catagoryModelToEntity(newModel);
     }
 
 }

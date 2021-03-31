@@ -6,9 +6,8 @@ import {CatagoryEntity, CreateBody} from './repository';
 
 
 export interface ModifyBO {
-    remark : any;
+    remark : string;
 }
-
 
 export abstract class AbcCatagory {
 

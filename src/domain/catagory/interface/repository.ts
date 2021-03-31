@@ -7,9 +7,8 @@ export interface CatagoryEntity {
     id : number;
     timestamp : Timestamp
     name : string;
-    remark ?: any;  // 备注
+    remark ?: string;  // 备注
 }
-
 
 export interface OneQuery {
     id ?: number;
@@ -20,7 +19,6 @@ export interface ManyQuery {
     idList ?: number[];
 }
 
-
 export abstract class AbcCatagoryQueryRepo {
 
     abstract fetchOne (query : OneQuery) : Promise<CatagoryEntity | undefined>;
@@ -29,10 +27,9 @@ export abstract class AbcCatagoryQueryRepo {
 
 }
 
-
 export interface CreateBody {
     name : string;
-    remark ?: any;
+    remark ?: string;
 }
 
 export abstract class AbcCatagorySaveRepo {
