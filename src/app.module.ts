@@ -9,7 +9,7 @@ import {StockModule} from './domain/stock';
 import config from './config';
 import {OrderModule} from './domain/order';
 import {PurchaseController} from './http/purchase';
-import {DeployController} from './http/deploy';
+import {DeployController} from './http/order';
 import {CatagoryModule} from './domain/catagory';
 
 

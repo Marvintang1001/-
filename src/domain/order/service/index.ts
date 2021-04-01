@@ -43,10 +43,13 @@ export class OrderService extends AbcOrder {
     // 落库：暂不考虑库存容量大小；包裹stockId更新；采购单状态更新
     async inStock (order : OrderEntity, back : boolean = false) {
         const package_ = await this.packageQuery.fetchOne({id : order.packageId});
+        if (package_.status != 'normal') {
+            return Left.of('该包裹状态异常');
+        }
         const id = back ? order.origin : order.target;
         if (!!parseInt(id)) {
             const stock = await this.stockQuery.fetchOne({id : parseInt(id)});
-            if (stock?.status != 'available') return Left.of(order);
+            if (stock?.status != 'available') return Left.of('该仓库当前不可用');
         }
         await this.packageService.modify(package_, {stockId : id});
         const reuslt = await this.modify(order,

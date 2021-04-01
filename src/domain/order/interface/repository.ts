@@ -9,7 +9,7 @@ export interface OrderEntity {
     origin : string;
     target : string;
     packageId : number;
-    type : string;  // 区分采购、调货、出货
+    type : string;  // 区分采购(purchase)、调货(deploy)、出货(sale)
     status : 'process' | 'finish' | 'return' | 'unusual';
     remark ?: string;
 }

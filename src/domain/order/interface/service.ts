@@ -20,6 +20,6 @@ export abstract class AbcOrder {
     Promise<OrderEntity>;
 
     abstract inStock (order : OrderEntity, back ?: boolean) :
-    Promise<Either<OrderEntity>>;
+    Promise<Either<OrderEntity | string>>;
 
 }
