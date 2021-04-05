@@ -14,8 +14,8 @@ export class splitLog1616745469111 implements MigrationInterface {
                 deleted_at bigint,
                 id integer NOT NULL PRIMARY KEY
                     DEFAULT nextval('split_id_seq'),
-                origin integer[] NOT NULL,
-                end integer[] NOT NULL
+                origin character varying(128) NOT NULL,
+                target character varying(128) NOT NULL
             )
         `);
     }

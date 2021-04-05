@@ -35,11 +35,11 @@ export class SplitLogQueryRepo extends AbcSplitLogQueryRepo {
     }
 
     async fetchMany (param : ManyQuery) {
-        const {idList, origin, end} = param;
+        const {idList, origin, target} = param;
         const result = await this.repo.find({where : {
             _id : {$in : idList},
             origin : {$in : origin},
-            end : {$in : end},
+            target : {$in : target},
         }});
         return result.map(x => splitModelToEntity(x));
     }

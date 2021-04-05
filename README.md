@@ -19,3 +19,4 @@
 - 不要商品领域，包裹代替
 - 分开商品和物品（物品种类）
 - 暂时没有统一物品编码，假设categoryID就是物品编码
+- typeorm不支持postgres的所有数组类型，暂时用simple-array解决

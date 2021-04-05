@@ -8,8 +8,8 @@ import {PostgresModel} from '@app/core/repository';
 @Entity({name : 'split'})
 export class SplitLogModel extends PostgresModel {
 
-    @Column() origin : number[];
+    @Column('simple-array') origin : string[];
 
-    @Column() end : number[];
+    @Column('simple-array') target : string[];
 
 }

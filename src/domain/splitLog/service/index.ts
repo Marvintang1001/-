@@ -44,8 +44,8 @@ export class SplitLogService extends AbcSplitLog {
                 stockId, status : 'normal', content,
             });
         }));
-        const idList = newList.map(x => x.id);
-        await this.create({origin : [id], end : idList});
+        const idList = newList.map(x => x.id.toString());
+        await this.create({origin : [id.toString()], target : idList});
         return newList;
     }
 
@@ -70,7 +70,7 @@ export class SplitLogService extends AbcSplitLog {
         const newOne = await this.packageService.create({
             stockId : stockIdList[0], status : 'normal', content,
         });
-        await this.create({origin : origin.map(x => x.id), end : [newOne.id]});
+        await this.create({origin : origin.map(x => x.id.toString()), target : [newOne.id.toString()]});
         return newOne;
     }
 

@@ -5,7 +5,7 @@ import {Entity, Column} from 'typeorm';
 import {PostgresModel} from '@app/core/repository';
 
 
-@Entity({name : 'order'})
+@Entity({name : 'order1'})
 export class OrderModel extends PostgresModel {
 
     @Column() packageId : number;
