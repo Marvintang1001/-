@@ -1,4 +1,4 @@
-# 仓储管理模型
+# 仓库管理系统
 
 ## （一）指令（需要先build）
 - 生成typeorm迁移脚本：typeorm migration:create -n ${表名称} -d src/migration
@@ -12,8 +12,8 @@
 ## （三）领域
 - catagory：种类
 - order：货单
-- package：拖（包裹）
-- splitLog：拆分日志
+- package：包裹
+- splitLog：拆分记录
 - stock：仓库
 
 ## （四）备注
