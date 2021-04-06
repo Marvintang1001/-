@@ -36,15 +36,34 @@ export class OrderQueryRepo extends AbcOrderQueryRepo {
 
     async fetchMany (param : ManyQuery) {
         const {idList, created, finished, origin, target, packageId, status} = param;
-        const result = await this.repo.find({where : {
-            _id : {$in : idList},
-            origin : {$in : origin},
-            target : {$in : target},
-            packageId : {$in : packageId},
-            status : {$in : status},
-            created_at : {$gte : created},
-            finished_at : {$lte : finished},
-        }});
+        const query = this.repo.createQueryBuilder();
+        if (idList) {
+            if (idList.length === 0) { return []; }
+            query.andWhere('id IN(:...idList)', {idList});
+        }
+        if (origin) {
+            if (origin.length === 0) { return []; }
+            query.andWhere('origin IN(:...origin)', {origin});
+        }
+        if (target) {
+            if (target.length === 0) { return []; }
+            query.andWhere('target IN(:...target)', {target});
+        }
+        if (packageId) {
+            if (packageId.length === 0) { return []; }
+            query.andWhere('packageId IN(:...packageId)', {packageId});
+        }
+        if (status) {
+            if (status.length === 0) { return []; }
+            query.andWhere('status IN(:...status)', {status});
+        }
+        if (created) {
+            query.andWhere('created_at >= :created', {created});
+        }
+        if (finished) {
+            query.andWhere('expired_at <= :finished', {finished});
+        }
+        const result = await query.printSql().getMany();
         return result.map((x : OrderModel) => orderModelToEntity(x));
     }
 

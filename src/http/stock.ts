@@ -10,7 +10,7 @@ import {AbcStock} from '@app/domain/stock/interface/service';
 
 
 @Controller('stock')
- export class StokckController {
+ export class StockController {
 
     constructor (
         private readonly stockQuery : AbcStockQueryRepo,

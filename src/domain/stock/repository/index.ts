@@ -37,10 +37,16 @@ export class StockQueryRepo extends AbcStockQueryRepo {
 
     async fetchMany (param : ManyQuery) {
         const {idList, status} = param;
-        const result = await this.repo.find({where : {
-            _id : {$in : idList},
-            status : {$in : status},
-        }});
+        const query = this.repo.createQueryBuilder();
+        if (idList) {
+            if (idList.length === 0) { return []; }
+            query.andWhere('id IN(:...idList)', {idList});
+        }
+        if (status) {
+            if (status.length === 0) { return []; }
+            query.andWhere('status IN(:...status)', {status});
+        }
+        const result = await query.printSql().getMany();
         return result.map(x => stockModelToEntity(x));
     }
 

@@ -11,7 +11,7 @@ export class PackageModel extends PostgresModel {
 
     @Column() status : 'normal' | 'unusual' | 'split';
 
-    @Column() stockId : string;
+    @Column({name : 'stockid'}) stockId : string;
 
     @Column('jsonb') content : PackageItem[];  // TODO: 未知是否可用。文档说“数组和对象能任意嵌套”
 

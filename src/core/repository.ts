@@ -23,7 +23,7 @@ export class BaseModel {
     updated_at : number;
 
     @Column({type : 'float', nullable : true})
-    finished_at ?: number;
+    expired_at ?: number;
 
     @Column({type : 'float', nullable : true})
     deleted_at ?: number;
@@ -90,15 +90,15 @@ export const entityToModel =
     const {created, updated, deleted, finished} = timestamp;
     return {
         created_at : created, updated_at : updated,
-        deleted_at : deleted, finished_at : finished,
+        deleted_at : deleted, expired_at : finished,
         ...other};
 };
 
 export const modelToEntity = <T extends BaseModel>(modal : T) => {
-    const {created_at, updated_at, deleted_at, finished_at, ...other} = modal;
+    const {created_at, updated_at, deleted_at, expired_at, ...other} = modal;
     const timestamp = {
         created : created_at, updated : updated_at,
-        deleted : deleted_at, finished : finished_at,
+        deleted : deleted_at, finished : expired_at,
     };
     return {timestamp, ...other};
 };

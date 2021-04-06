@@ -11,7 +11,7 @@ import {AbcPackageQueryRepo} from '@app/domain/package/interface/repository';
 
 
 @Controller('order')
-export class DeployController {
+export class OrderController {
 
     constructor (
         private readonly orderService : AbcOrder,
@@ -31,11 +31,11 @@ export class DeployController {
             return {code : 2001, error : '无效的发货仓库id'};
         }
         const package_ = await this.packageQuery.fetchOne({id : packageId});
+        if (package_?.status != 'normal') {
+            return {code : 2003, error : '非法的包裹或包裹不存在'};
+        }
         if (package_.stockId != origin) {
             return {code : 2002, error : '目标包裹当前不在此仓库'};
-        }
-        if (package_.status != 'normal') {
-            return {code : 2003, error : '非法的包裹'};
         }
         if (type != 'deploy' && type != 'sale') {
             return {code : 2004, error : '无效的订单类型'};
@@ -54,7 +54,7 @@ export class DeployController {
     }
 
     // 落库
-    @Post('inStock')
+    @Post('instock')
     async inStock (@Body() {id} : ConfirmDto) {
         const order = await this.orderQuery.fetchOne({id});
         if (!order || order.status != 'process') {

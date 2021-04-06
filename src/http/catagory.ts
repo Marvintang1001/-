@@ -10,7 +10,7 @@ import {AbcCatagory} from '@app/domain/catagory/interface/service';
 
 
 @Controller('catagory')
- export class StokckController {
+ export class CatagoryController {
 
     constructor (
         private readonly catagoryQuery : AbcCatagoryQueryRepo,

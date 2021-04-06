@@ -33,7 +33,8 @@ export class SplitLogService extends AbcSplitLog {
             (x, y) => mergeWith((a, b) => a[0].volume + b[0].volume, x, y), {});
         for (const x of Object.keys(targetObj)) {
             const content = contentObj[x][0];
-            if (content?.volume != targetObj[x]) {
+            if (content?.volume != targetObj[x][0]?.volume) {
+                console.log('aaaa');
                 throw new ApiError(`该物品(${content})拆分前后总数不相等`);
             }
         }
@@ -70,7 +71,9 @@ export class SplitLogService extends AbcSplitLog {
         const newOne = await this.packageService.create({
             stockId : stockIdList[0], status : 'normal', content,
         });
-        await this.create({origin : origin.map(x => x.id.toString()), target : [newOne.id.toString()]});
+        await this.create({
+            origin : origin.map(x => x.id.toString()), target : [newOne.id.toString()],
+        });
         return newOne;
     }
 

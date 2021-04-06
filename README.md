@@ -1,7 +1,10 @@
 # 仓储管理模型
 
-## （一）指令
+## （一）指令（需要先build）
 - 生成typeorm迁移脚本：typeorm migration:create -n ${表名称} -d src/migration
+- 执行typeorm迁移脚本：typeorm migration:run -f ./dist/config/index -c postgres
+- 回退：typeorm migration:revert -f ./dist/config/index -c postgres
+
 
 ## （二）环境
 - nestjs+typeorm+ts+postgres
@@ -20,3 +23,14 @@
 - 分开商品和物品（物品种类）
 - 暂时没有统一物品编码，假设categoryID就是物品编码
 - typeorm不支持postgres的所有数组类型，暂时用simple-array解决
+- expired_at是结束时间
+
+## （五）测试
+1. 仓库A创建，不能重名：√
+2. 仓库修改状态：√
+3. 物品种类a和b新增，不能重名，remark可空：√
+4. 种类修改remark：√
+5. 创建一个采购单aa，种类包含a和b; 落库A，包裹1状态normal：√
+6. 创建一个采购单bb，种类包含a和b; 退货，包裹2状态unusual：√
+7. 包裹1从仓库A调配到仓库B，其中种类a物品打碎了1支（先拆包，再修改该包状态）：√
+8. 

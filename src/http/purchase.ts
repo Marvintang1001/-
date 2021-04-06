@@ -35,7 +35,6 @@ export class PurchaseController {
         if (codeList.length != catagoryList.length) {
             return {code : 1002, error : '存在无效物品种类'};
         }
-
         const package_ = await this.packageService.create({
             status : 'normal', content, stockId : origin,
         });

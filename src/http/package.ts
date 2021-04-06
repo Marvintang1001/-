@@ -5,17 +5,18 @@
 
 import {Body, Controller, Post} from '@nestjs/common';
 
-import {all} from 'ramda';
-import {SplitDto, CombineDto} from './dto/package';
+import {SplitDto, CombineDto, ModifyDto} from './dto/package';
 import {AbcSplitLog} from '@app/domain/splitLog/interface/service';
 import {AbcPackageQueryRepo} from '@app/domain/package/interface/repository';
+import {AbcPackage} from '@app/domain/package/interface/service';
 
 
 @Controller('package')
-export class PurchaseController {
+export class PackageController {
 
     constructor (
         private readonly packageQuery : AbcPackageQueryRepo,
+        private readonly packageService : AbcPackage,
         private readonly splitLogService : AbcSplitLog,
     ) {}
 
@@ -48,6 +49,16 @@ export class PurchaseController {
         } catch (e) {
             return {code : 3004, error : e};
         }
+    }
+
+    @Post('modify')
+    async modify (@Body() {id, status} : ModifyDto) {
+        const package_ = await this.packageQuery.fetchOne({id});
+        if (!package_) {
+            return {code : 3005, error : '包裹不存在'};
+        }
+        const newPackage = await this.packageService.modify(package_, {status});
+        return {code : 0, data : newPackage};
     }
 
 }

@@ -38,9 +38,12 @@ export class CatagoryQueryRepo extends AbcCatagoryQueryRepo {
 
     async fetchMany (param : ManyQuery) {
         const {idList} = param;
-        const result = await this.repo.find({where : {
-            _id : {$in : idList},
-        }});
+        const query = this.repo.createQueryBuilder();
+        if (idList) {
+            if (idList.length === 0) { return []; }
+            query.andWhere('id IN(:...idList)', {idList});
+        }
+        const result = await query.printSql().getMany();
         return result.map(x => catagoryModelToEntity(x));
     }
 

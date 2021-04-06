@@ -8,7 +8,7 @@ import {PostgresModel} from '@app/core/repository';
 @Entity({name : 'order1'})
 export class OrderModel extends PostgresModel {
 
-    @Column() packageId : number;
+    @Column({name : 'packageid'}) packageId : number;
 
     @Column() origin : string;
 

@@ -51,9 +51,11 @@ export class OrderService extends AbcOrder {
             const stock = await this.stockQuery.fetchOne({id : parseInt(id)});
             if (stock?.status != 'available') return Left.of('该仓库当前不可用');
         }
-        await this.packageService.modify(package_, {stockId : id});
+        const packageStatus = back && !parseInt(id) ? 'unusual' : 'normal';
+        await this.packageService.modify(
+            package_, {stockId : id, status : packageStatus});
         const reuslt = await this.modify(order,
-            {status : !back ? 'return' : 'finish'});
+            {status : !!back ? 'return' : 'finish'});
         return Right.of(reuslt);
     }
 

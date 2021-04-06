@@ -14,7 +14,7 @@ export class order1616659537334 implements MigrationInterface {
                 deleted_at bigint,
                 id integer NOT NULL PRIMARY KEY
                     DEFAULT nextval('order1_id_seq'),
-                packageId integer NOT NULL,
+                packageid integer NOT NULL,
                 origin character varying(128) NOT NULL,
                 target character varying(128) NOT NULL,
                 type character varying(64) NOT NULL,

@@ -38,11 +38,20 @@ export class PackageQueryRepo extends AbcPackageQueryRepo {
 
     async fetchMany (param : ManyQuery) {
         const {idList, status, stockId} = param;
-        const result = await this.repo.find({where : {
-            _id : {$in : idList},
-            status : {$in : status},
-            stockId : {$in : stockId},
-        }});
+        const query = this.repo.createQueryBuilder();
+        if (idList) {
+            if (idList.length === 0) { return []; }
+            query.andWhere('id IN(:...idList)', {idList});
+        }
+        if (status) {
+            if (status.length === 0) { return []; }
+            query.andWhere('status IN(:...status)', {status});
+        }
+        if (stockId) {
+            if (stockId.length === 0) { return []; }
+            query.andWhere('stockId IN(:...stockId)', {stockId});
+        }
+        const result = await query.printSql().getMany();
         return result.map(x => packageModelToEntity(x));
     }
 
