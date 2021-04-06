@@ -1,7 +1,7 @@
 // TODO: 暂未考虑已出库或未入库包裹的拆分限制
 
 import {Injectable} from '@nestjs/common';
-import {any, flatten, groupBy, mergeAll, mergeWith} from 'ramda';
+import {any, flatten, groupBy, mergeAll, mergeWith, uniq} from 'ramda';
 
 import {AbcSplitLog} from '../interface/service';
 import {
@@ -55,18 +55,15 @@ export class SplitLogService extends AbcSplitLog {
         if (any(x => x != 'normal')(origin.map(x => x.status))) {
             throw new ApiError('含状态异常的包裹');
         }
-        const stockIdList = origin.map(x => x.stockId);
+        const stockIdList = uniq(origin.map(x => x.stockId));
         if (stockIdList.length > 1) {
             throw new ApiError('包裹不在同一个仓库');
         }
-        await Promise.all(origin.map(async x => {
-            return await this.packageService.modify(x, {status : 'split'});
-        }));  // TODO: 事务？
 
         const contentObj = groupBy(
             x => x.code.toString(), flatten(origin.map(x => x.content)));
-        const content = Object.values(contentObj).reduce(
-            (x, y) => mergeWith((a, b) => a[0].volume + b[0].volume, x, y), {});
+        const content = Object.values(contentObj).map(item => item.reduce(
+            (x, y) => mergeWith((a, b) => a[0].volume + b[0].volume, x, y), {}));
 
         const newOne = await this.packageService.create({
             stockId : stockIdList[0], status : 'normal', content,
@@ -74,6 +71,9 @@ export class SplitLogService extends AbcSplitLog {
         await this.create({
             origin : origin.map(x => x.id.toString()), target : [newOne.id.toString()],
         });
+        await Promise.all(origin.map(async x => {
+            return await this.packageService.modify(x, {status : 'split'});
+        }));  // TODO: 事务？
         return newOne;
     }
 
