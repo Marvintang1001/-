@@ -86,7 +86,7 @@ export class SplitLogSaveRepo extends AbcSplitLogSaveRepo {
             async manager => {
                 const {stockId, id} = origin;
                 await this.packageRepo.modify(
-                    {status : 'split', ...origin}, origin, manager,
+                    {...origin, status : 'split'}, origin, manager,
                 );
                 const newList = await Promise.all(target.map(async content => {
                     return await this.packageRepo.save({
@@ -113,7 +113,7 @@ export class SplitLogSaveRepo extends AbcSplitLogSaveRepo {
                     stockId : stockIdList[0],
                 }, manager);
                 await Promise.all(origin.map(async x => {
-                    return await this.packageRepo.modify({status : 'split', ...x}, x);
+                    return await this.packageRepo.modify({...x, status : 'split'}, x);
                 }));
                 return newOne;
             });

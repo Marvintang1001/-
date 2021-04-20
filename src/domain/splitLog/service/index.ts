@@ -1,7 +1,7 @@
 // TODO: 暂未考虑已出库或未入库包裹的拆分限制
 
 import {Injectable} from '@nestjs/common';
-import {any, flatten, groupBy, mergeWith, uniq} from 'ramda';
+import {any, flatten, groupBy, mergeWithKey, uniq} from 'ramda';
 
 import {AbcSplitLog} from '../interface/service';
 import {
@@ -22,13 +22,18 @@ export class SplitLogService extends AbcSplitLog {
         const {status, content} = origin;
         if (status != 'normal') throw new ApiError('该包裹状态异常');
         const contentObj = groupBy(x => x.code.toString(), content);
-        const targetObjList = target.map(x => groupBy(x => x.code.toString(), x));
-        const targetObj = targetObjList.reduce(
-            (x, y) => mergeWith((a, b) => a[0].volume + b[0].volume, x, y), {});
+        const targetObjList = groupBy(x => x.code.toString(), flatten(target));
+        const targetObj = {};
+        for (const key of Object.keys(targetObjList)) {
+            const arr = targetObjList[key];
+            const sum = arr.map(x => x.volume).reduce((a, b) => a + b, 0);
+            targetObj[key] = sum;
+        }
         for (const x of Object.keys(targetObj)) {
             const content = contentObj[x][0];
-            if (content?.volume != targetObj[x][0]?.volume) {
-                throw new ApiError(`该物品(${content})拆分前后总数不相等`);
+            if (content?.volume != targetObj[x]) {
+                console.log(content?.volume, targetObj[x][0]?.volume);
+                throw new ApiError(`该物品(${JSON.stringify(content)})拆分前后总数不相等`);
             }
         }
 
@@ -49,7 +54,8 @@ export class SplitLogService extends AbcSplitLog {
         const contentObj = groupBy(
             x => x.code.toString(), flatten(origin.map(x => x.content)));
         const content = Object.values(contentObj).map(item => item.reduce(
-            (x, y) => mergeWith((a, b) => a[0].volume + b[0].volume, x, y), {}));
+            (x, y) => mergeWithKey((k, a, b) => k == 'volume' ? a + b : b, x, y), {}
+        ));
 
         const newOne = await this.saveRepo.handleARCombine(origin, content);
         return newOne;

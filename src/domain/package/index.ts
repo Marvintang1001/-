@@ -23,10 +23,8 @@ class PackageProvider extends AbcProvider {
         this.addProviders([
             {provide : AbcPackage, useClass : PackageService},
             {provide : AbcPackageQueryRepo, useClass : PackageQueryRepo},
-        ]),
-        this.addProviders([
             {provide : AbcPackageSaveRepo, useClass : PackageSaveRepo},
-        ], false)
+        ]),
     );
 
 }
