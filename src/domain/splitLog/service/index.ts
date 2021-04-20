@@ -32,7 +32,6 @@ export class SplitLogService extends AbcSplitLog {
         for (const x of Object.keys(targetObj)) {
             const content = contentObj[x][0];
             if (content?.volume != targetObj[x]) {
-                console.log(content?.volume, targetObj[x][0]?.volume);
                 throw new ApiError(`该物品(${JSON.stringify(content)})拆分前后总数不相等`);
             }
         }
