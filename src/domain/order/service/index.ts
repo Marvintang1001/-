@@ -9,7 +9,6 @@ import {
 import {AbcPackageQueryRepo} from '@app/domain/package/interface/repository';
 import {AbcStockQueryRepo} from '@app/domain/stock/interface/repository';
 import {Left, Right} from '@app/tool/functor';
-import {AbcPackage} from '@app/domain/package/interface/service';
 
 
 @Injectable()
@@ -19,7 +18,6 @@ export class OrderService extends AbcOrder {
         private readonly saveRepo : AbcOrderSaveRepo,
         private readonly stockQuery : AbcStockQueryRepo,
         private readonly packageQuery : AbcPackageQueryRepo,
-        private readonly packageService : AbcPackage,
     ) { super(); }
 
     async create (storage : CreateParam) : Promise<OrderEntity> {
@@ -52,9 +50,14 @@ export class OrderService extends AbcOrder {
             const stock = await this.stockQuery.fetchOne({id : parseInt(id)});
             if (stock?.status != 'available') return Left.of('该仓库当前不可用');
         }
-        await this.packageService.modify(package_, {stockId : id});
-        const reuslt = await this.modify(order, {status : 'finish'});
-        return Right.of(reuslt);
+        const orderTarget = {status : 'finish', ...order};
+        const packageTarget = {stockId : id, ...package_};
+
+        const result = await this.saveRepo.orderARModify(
+            {order : orderTarget, package : packageTarget},
+            {order, package : package_},
+        );
+        return Right.of(result);
     }
 
 }

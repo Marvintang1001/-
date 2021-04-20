@@ -1,6 +1,9 @@
 
 
+import {EntityManager} from 'typeorm';
+
 import {Timestamp} from '@app/core/repository';
+import {PackageEntity, PackageItem} from '@app/domain/package/interface/repository';
 
 
 export interface SplitLogEntity {
@@ -11,6 +14,11 @@ export interface SplitLogEntity {
     stockId : string;
 }
 
+
+export interface SplitLogAR {
+    splitLog ?: SplitLogEntity;
+    package : PackageEntity;
+}
 
 export interface OneQuery {
     id : number;
@@ -41,7 +49,13 @@ export interface CreateBody {
 
 export abstract class AbcSplitLogSaveRepo {
 
-    abstract save (body : CreateBody) : Promise<SplitLogEntity>;
+    abstract save (body : CreateBody, manager ?: EntityManager) : Promise<SplitLogEntity>;
+
+    abstract handleARSplit (origin : PackageEntity, target : PackageItem[][]) :
+    Promise<PackageEntity[]>;
+
+    abstract handleARCombine (origin : PackageEntity[], target : PackageItem[]) :
+    Promise<PackageEntity>;
 
 }
 

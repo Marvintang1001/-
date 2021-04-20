@@ -1,15 +1,16 @@
 
 
-import {EntityRepository} from 'typeorm';
+import {EntityRepository, getManager, EntityManager} from 'typeorm';
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 
 import {BasePostgres, modelToEntity, entityToModel} from '@app/core/repository';
 import {
     OrderEntity, AbcOrderQueryRepo, AbcOrderSaveRepo,
-    OneQuery, ManyQuery, CreateBody,
+    OneQuery, ManyQuery, CreateBody, OrderAR,
 } from '../interface/repository';
 import {OrderModel} from './postgres';
+import {AbcPackageSaveRepo} from '@app/domain/package/interface/repository';
 
 
 const orderModelToEntity = (order : OrderModel) : OrderEntity => modelToEntity(order);
@@ -75,6 +76,7 @@ export class OrderSaveRepo extends AbcOrderSaveRepo {
     constructor (
         @InjectRepository(OrderRepository, 'postgres')
         private readonly repo : OrderRepository,
+        private readonly packageRepo : AbcPackageSaveRepo,
     ) { super(); }
 
     async save (order : CreateBody) {
@@ -82,13 +84,26 @@ export class OrderSaveRepo extends AbcOrderSaveRepo {
         return orderModelToEntity(model);
     }
 
-    async modify (target : OrderEntity, origin : OrderEntity) {
+    async modify (target : OrderEntity, origin : OrderEntity, manager ?: EntityManager) {
         const {timestamp, type, status, remark} = target;
         const model = orderEntityToModel({
             ...origin, timestamp, type, status, remark,
         });
-        const newModel = await this.repo.save(model);
+        const newModel = manager ? await manager.save(
+            manager.create(OrderModel, {
+                ...model, updated_at : (new Date()).valueOf(),
+            })
+        ) : await this.repo.save(model);
         return orderModelToEntity(newModel);
+    }
+
+    async orderARModify (target : OrderAR, origin : OrderAR) {
+        return await getManager('postgres').transaction(
+            async manager => {
+                const newModel = await this.modify(target.order, origin.order, manager);
+                await this.packageRepo.modify(target.package, origin.package, manager);
+                return newModel;
+            });
     }
 
 }

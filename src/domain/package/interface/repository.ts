@@ -1,5 +1,7 @@
 
 
+import {EntityManager} from 'typeorm';
+
 import {Timestamp} from '@app/core/repository';
 
 
@@ -46,9 +48,10 @@ export interface CreateBody {
 
 export abstract class AbcPackageSaveRepo {
 
-    abstract save (body : CreateBody) : Promise<PackageEntity>;
+    abstract save (body : CreateBody, manager ?: EntityManager,) : Promise<PackageEntity>;
 
-    abstract modify (target : PackageEntity, origin : PackageEntity) :
-    Promise<PackageEntity>;
+    abstract modify (
+        target : PackageEntity, origin : PackageEntity, manager ?: EntityManager,
+    ) : Promise<PackageEntity>;
 
 }

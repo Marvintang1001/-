@@ -1,14 +1,13 @@
 // TODO: 暂未考虑已出库或未入库包裹的拆分限制
 
 import {Injectable} from '@nestjs/common';
-import {any, flatten, groupBy, mergeAll, mergeWith, uniq} from 'ramda';
+import {any, flatten, groupBy, mergeWith, uniq} from 'ramda';
 
 import {AbcSplitLog} from '../interface/service';
 import {
     AbcSplitLogSaveRepo, CreateBody, SplitLogEntity,
 } from '../interface/repository';
 import {PackageEntity, PackageItem} from '@app/domain/package/interface/repository';
-import {AbcPackage} from '@app/domain/package/interface/service';
 import {ApiError} from '@app/error';
 
 
@@ -17,15 +16,10 @@ export class SplitLogService extends AbcSplitLog {
 
     constructor (
         private readonly saveRepo : AbcSplitLogSaveRepo,
-        private readonly packageService : AbcPackage,
     ) { super(); }
 
-    async create (storage : CreateBody) : Promise<SplitLogEntity> {
-        return this.saveRepo.save(storage);
-    }
-
     async split (origin : PackageEntity, target : PackageItem[][]) {
-        const {status, stockId, id, content} = origin;
+        const {status, content} = origin;
         if (status != 'normal') throw new ApiError('该包裹状态异常');
         const contentObj = groupBy(x => x.code.toString(), content);
         const targetObjList = target.map(x => groupBy(x => x.code.toString(), x));
@@ -38,14 +32,7 @@ export class SplitLogService extends AbcSplitLog {
             }
         }
 
-        await this.packageService.modify(origin, {status : 'split'});
-        const newList = await Promise.all(target.map(async content => {
-            return await this.packageService.create({
-                stockId, status : 'normal', content,
-            });
-        }));
-        const idList = newList.map(x => x.id.toString());
-        await this.create({origin : [id.toString()], target : idList, stockId});
+        const newList = await this.saveRepo.handleARSplit(origin, target);
         return newList;
     }
 
@@ -64,16 +51,7 @@ export class SplitLogService extends AbcSplitLog {
         const content = Object.values(contentObj).map(item => item.reduce(
             (x, y) => mergeWith((a, b) => a[0].volume + b[0].volume, x, y), {}));
 
-        const newOne = await this.packageService.create({
-            stockId : stockIdList[0], status : 'normal', content,
-        });
-        await this.create({
-            origin : origin.map(x => x.id.toString()), target : [newOne.id.toString()],
-            stockId : stockIdList[0],
-        });
-        await Promise.all(origin.map(async x => {
-            return await this.packageService.modify(x, {status : 'split'});
-        }));  // TODO: 事务？
+        const newOne = await this.saveRepo.handleARCombine(origin, content);
         return newOne;
     }
 

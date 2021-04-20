@@ -1,6 +1,7 @@
 
 
 import {Timestamp} from '@app/core/repository';
+import {PackageEntity} from '@app/domain/package/interface/repository';
 
 
 export interface OrderEntity {
@@ -14,6 +15,10 @@ export interface OrderEntity {
     remark ?: string;
 }
 
+export interface OrderAR {
+    order : OrderEntity;
+    package : PackageEntity;
+}
 
 export interface OneQuery {
     id : number;
@@ -53,6 +58,9 @@ export abstract class AbcOrderSaveRepo {
     abstract save (body : CreateBody) : Promise<OrderEntity>;
 
     abstract modify (target : OrderEntity, origin : OrderEntity) :
+    Promise<OrderEntity>;
+
+    abstract orderARModify (target : OrderAR, origin : OrderAR) :
     Promise<OrderEntity>;
 
 }

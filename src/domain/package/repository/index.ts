@@ -1,6 +1,6 @@
 
 
-import {EntityRepository} from 'typeorm';
+import {EntityRepository, EntityManager} from 'typeorm';
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 
@@ -65,15 +65,26 @@ export class PackageSaveRepo extends AbcPackageSaveRepo {
         private readonly repo : PackageRepository,
     ) { super(); }
 
-    async save (package_ : CreateBody) {
-        const model = await this.repo.save(package_);
+    async save (package_ : CreateBody, manager ?: EntityManager,) {
+        const model = manager ? await manager.save(
+            manager.create(PackageModel, {
+                ...package_, created_at : (new Date()).valueOf(),
+                updated_at : (new Date()).valueOf(),
+            })
+        ) : await this.repo.save(package_);
         return packageModelToEntity(model);
     }
 
-    async modify (target : PackageEntity, origin : PackageEntity) {
+    async modify (
+        target : PackageEntity, origin : PackageEntity, manager ?: EntityManager,
+    ) {
         const {status, stockId} = target;
         const model = packageEntityToModel({...origin, status, stockId});
-        const newModel = await this.repo.save(model);
+        const newModel = manager ? await manager.save(
+            manager.create(PackageModel, {
+                ...model, updated_at : (new Date()).valueOf(),
+            })
+        ) : await this.repo.save(model);
         return packageModelToEntity(newModel);
     }
 
