@@ -2,9 +2,9 @@
 
 import {Injectable} from '@nestjs/common';
 
-import {AbcOrder, ModifyBO} from '../interface/service';
+import {AbcOrder, ModifyBO, CreateParam} from '../interface/service';
 import {
-    AbcOrderSaveRepo, CreateBody, OrderEntity,
+    AbcOrderSaveRepo, OrderEntity,
 } from '../interface/repository';
 import {AbcPackageQueryRepo} from '@app/domain/package/interface/repository';
 import {AbcStockQueryRepo} from '@app/domain/stock/interface/repository';
@@ -22,8 +22,9 @@ export class OrderService extends AbcOrder {
         private readonly packageService : AbcPackage,
     ) { super(); }
 
-    async create (storage : CreateBody) : Promise<OrderEntity> {
-        return this.saveRepo.save(storage);
+    async create (storage : CreateParam) : Promise<OrderEntity> {
+        const {package_, ...other} = storage;
+        return this.saveRepo.save({packageId : package_.id, ...other});
     }
 
     async modify (origin : OrderEntity, modifyBO : ModifyBO) {
@@ -41,21 +42,18 @@ export class OrderService extends AbcOrder {
     }
 
     // 落库：暂不考虑库存容量大小；包裹stockId更新；采购单状态更新
-    async inStock (order : OrderEntity, back : boolean = false) {
+    async inStock (order : OrderEntity) {
         const package_ = await this.packageQuery.fetchOne({id : order.packageId});
         if (package_.status != 'normal') {
             return Left.of('该包裹状态异常');
         }
-        const id = back ? order.origin : order.target;
+        const id = order.target;
         if (!!parseInt(id)) {
             const stock = await this.stockQuery.fetchOne({id : parseInt(id)});
             if (stock?.status != 'available') return Left.of('该仓库当前不可用');
         }
-        const packageStatus = back && !parseInt(id) ? 'unusual' : 'normal';
-        await this.packageService.modify(
-            package_, {stockId : id, status : packageStatus});
-        const reuslt = await this.modify(order,
-            {status : !!back ? 'return' : 'finish'});
+        await this.packageService.modify(package_, {stockId : id});
+        const reuslt = await this.modify(order, {status : 'finish'});
         return Right.of(reuslt);
     }
 

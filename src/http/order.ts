@@ -48,7 +48,7 @@ export class OrderController {
         }
         const order = await this.orderService.create({
             origin : origin, target : target,
-            packageId, type, status : 'process', remark,
+            package_, type, status : 'process', remark,
         });
         return {code : 0, data : order};
     }
@@ -64,20 +64,6 @@ export class OrderController {
             ok => ({code : 0, data : ok}),
             err => ({code : 2007, error : err}),
             await this.orderService.inStock(order)
-        );
-    }
-
-    // 退货
-    @Post('return')
-    async back (@Body() {id} : ConfirmDto) {
-        const order = await this.orderQuery.fetchOne({id});
-        if (!order || order.status != 'process') {
-            return {code : 2006, error : '无效的货单id'};
-        }
-        return either(
-            ok => ({code : 0, data : ok}),
-            err => ({code : 2008, error : err}),
-            await this.orderService.inStock(order, true)
         );
     }
 

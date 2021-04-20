@@ -8,6 +8,7 @@ export interface SplitLogEntity {
     timestamp : Timestamp
     origin : string[];  // package id array
     target : string[];
+    stockId : string;
 }
 
 
@@ -19,6 +20,7 @@ export interface ManyQuery {
     idList ?: number[];
     origin ?: string[];
     target ?: string[];
+    stockId ?: string[];
 }
 
 
@@ -34,6 +36,7 @@ export abstract class AbcSplitLogQueryRepo {
 export interface CreateBody {
     origin : string[];
     target : string[];
+    stockId : string;
 }
 
 export abstract class AbcSplitLogSaveRepo {

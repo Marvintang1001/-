@@ -19,6 +19,6 @@ export class OrderModel extends PostgresModel {
     @Column({nullable : true}) remark ?: string;
 
     @Column()
-    status : 'process' | 'finish' | 'return' | 'unusual';
+    status : 'process' | 'finish' | 'unusual';
 
 }

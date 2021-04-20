@@ -12,4 +12,6 @@ export class SplitLogModel extends PostgresModel {
 
     @Column('simple-array') target : string[];
 
+    @Column({name : 'stockid'}) stockId : string;
+
 }

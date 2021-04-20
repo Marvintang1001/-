@@ -40,7 +40,7 @@ export class PurchaseController {
         });
 
         const order = await this.orderService.create({
-            origin, target : stockId, packageId : package_.id, type : 'purchase',
+            origin, target : stockId, package_, type : 'purchase',
             status : 'process', remark,
         });
         return {code : 0, data : order};

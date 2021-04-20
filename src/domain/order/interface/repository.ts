@@ -10,7 +10,7 @@ export interface OrderEntity {
     target : string;
     packageId : number;
     type : string;  // 区分采购(purchase)、调货(deploy)、出货(sale)
-    status : 'process' | 'finish' | 'return' | 'unusual';
+    status : 'process' | 'finish' | 'unusual';
     remark ?: string;
 }
 
@@ -44,7 +44,7 @@ export interface CreateBody {
     target : string;
     packageId : number;
     type : string;
-    status : 'process' | 'finish' | 'return' | 'unusual';
+    status : 'process' | 'finish' | 'unusual';
     remark ?: string;
 }
 

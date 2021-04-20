@@ -35,7 +35,7 @@ export class SplitLogQueryRepo extends AbcSplitLogQueryRepo {
     }
 
     async fetchMany (param : ManyQuery) {
-        const {idList, origin, target} = param;
+        const {idList, origin, target, stockId} = param;
         const query = this.repo.createQueryBuilder();
         if (idList) {
             if (idList.length === 0) { return []; }
@@ -48,6 +48,10 @@ export class SplitLogQueryRepo extends AbcSplitLogQueryRepo {
         if (target) {
             if (target.length === 0) { return []; }
             query.andWhere('target IN(:...target)', {target});
+        }
+        if (stockId) {
+            if (stockId.length === 0) { return []; }
+            query.andWhere('stockId IN(:...stockId)', {stockId});
         }
         const result = await query.printSql().getMany();
         return result.map(x => splitModelToEntity(x));
